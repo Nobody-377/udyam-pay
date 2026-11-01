@@ -1,0 +1,26 @@
+{
+  "globalMinAmountPaise": 50000,
+  "globalMaxAmountPaise": 50000000,
+  "restrictedPhoneSuffixes": {
+    "0001": {
+      "outcome": "DECLINED",
+      "errorCode": "CREDIT_POLICY_DECLINE",
+      "reason": "Credit score below minimum policy threshold (Simulated test scenario)"
+    },
+    "0008": {
+      "outcome": "DECLINED",
+      "errorCode": "INELIGIBLE_CRITERIA",
+      "reason": "Customer does not meet age or residency eligibility criteria (Simulated test scenario)"
+    }
+  },
+  "categoryRules": {
+    "SMARTPHONE": { "maxTenureMonths": 18, "minAmountPaise": 50000 },
+    "LAPTOP": { "maxTenureMonths": 24, "minAmountPaise": 1500000 },
+    "TELEVISION": { "maxTenureMonths": 24, "minAmountPaise": 1000000 },
+    "REFRIGERATOR": { "maxTenureMonths": 18, "minAmountPaise": 1000000 },
+    "WASHING_MACHINE": { "maxTenureMonths": 18, "minAmountPaise": 800000 },
+    "AIR_CONDITIONER": { "maxTenureMonths": 24, "minAmountPaise": 1500000 },
+    "OTHER_ELECTRONICS": { "maxTenureMonths": 12, "minAmountPaise": 50000 }
+  }
+}
+

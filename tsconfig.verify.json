@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "5.0",
+    "outDir": "dist-verify",
+    "noEmit": false
+  },
+  "include": [
+    "src/types/**/*.d.ts",
+    "src/**/*.ts",
+    "scripts/verify-logic.ts"
+  ]
+}
+

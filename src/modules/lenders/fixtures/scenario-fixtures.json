@@ -1,0 +1,79 @@
+{
+  "scenarios": {
+    "APPROVE": {
+      "outcome": "OFFERED",
+      "description": "Standard multi-offer proposal across multiple tenures",
+      "tenures": [3, 6, 9, 12],
+      "processingFeePercent": 1.5,
+      "rateType": "REDUCING_BALANCE"
+    },
+    "PROMOTIONAL_ZERO_EMI": {
+      "outcome": "OFFERED",
+      "description": "Promotional zero-cost EMI (subvented interest)",
+      "tenures": [3, 6],
+      "interestRatePercent": "0.00",
+      "processingFeePercent": 0.0,
+      "rateType": "FLAT"
+    },
+    "NO_OFFERS": {
+      "outcome": "DECLINED",
+      "errorCode": "NO_OFFERS_MATCHED",
+      "reason": "No lending partner generated a sanction proposal for this application (Simulated)"
+    },
+    "DECLINE": {
+      "outcome": "DECLINED",
+      "errorCode": "CREDIT_POLICY_DECLINE",
+      "reason": "Application does not meet lender risk criteria (Simulated policy decline)"
+    },
+    "INELIGIBLE": {
+      "outcome": "DECLINED",
+      "errorCode": "INELIGIBLE_CRITERIA",
+      "reason": "Customer profile does not meet eligibility threshold (Simulated)"
+    },
+    "ADDITIONAL_INFO": {
+      "outcome": "ADDITIONAL_INFO_REQUIRED",
+      "requiredDocument": "BANK_STATEMENT_LAST_3_MONTHS",
+      "reason": "Underwriting requires 3 months bank statements for credit verification"
+    },
+    "TIMEOUT": {
+      "outcome": "TIMEOUT",
+      "errorCode": "LENDER_TIMEOUT",
+      "simulatedDelayMs": 250
+    },
+    "UNAVAILABLE": {
+      "outcome": "UNAVAILABLE",
+      "errorCode": "SERVICE_UNAVAILABLE",
+      "httpStatus": 503,
+      "reason": "Upstream lender underwriting gateway is temporarily unavailable"
+    },
+    "RATE_LIMITED": {
+      "outcome": "RATE_LIMITED",
+      "errorCode": "RATE_LIMITED",
+      "retryAfterSeconds": 60,
+      "reason": "Upstream API rate limit reached"
+    },
+    "MALFORMED": {
+      "outcome": "MALFORMED_RESPONSE",
+      "errorCode": "SCHEMA_VALIDATION_ERROR",
+      "snippet": "<html>502 Bad Gateway</html>"
+    },
+    "ASYNC": {
+      "outcome": "PENDING",
+      "webhookExpected": true,
+      "pollIntervalSeconds": 15
+    }
+  },
+  "phoneSuffixMapping": {
+    "0001": "DECLINE",
+    "0002": "ADDITIONAL_INFO",
+    "0003": "TIMEOUT",
+    "0004": "UNAVAILABLE",
+    "0005": "RATE_LIMITED",
+    "0006": "MALFORMED",
+    "0007": "ASYNC",
+    "0008": "INELIGIBLE",
+    "0009": "NO_OFFERS",
+    "0010": "PROMOTIONAL_ZERO_EMI"
+  }
+}
+

@@ -1,0 +1,702 @@
+// Udhyam PAY database schema.
+// STATUS: written, not validated (prisma CLI was unavailable in the authoring workspace).
+//
+// Conventions
+//  - Money is stored as integer paise (BigInt). Never floats. Rates/percentages use Decimal.
+//  - All timestamps are timestamptz (UTC).
+//  - Every merchant-owned table carries `merchantId` so every query can filter on it directly.
+//  - Append-only tables (status history, audit log, commission ledger) are protected by DB
+//    triggers added in prisma/sql/001_constraints.sql.
+//  - No raw lender payloads, secrets, OTPs, tokens, Aadhaar/PAN or identity documents are stored.
+//  - Prisma is pinned to 6.x (generator "prisma-client-js"); Prisma 7 changes configuration and
+//    must be adopted deliberately.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum UserRole {
+  ADMIN
+  SYSTEM_ADMIN
+  OPS_AGENT
+  MERCHANT_OWNER
+  MERCHANT_STAFF
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum MerchantStatus {
+  PENDING_VERIFICATION
+  VERIFIED
+  SUSPENDED
+}
+
+enum ShopStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum ProductCategory {
+  SMARTPHONE
+  TELEVISION
+  REFRIGERATOR
+  WASHING_MACHINE
+  AIR_CONDITIONER
+  LAPTOP
+  OTHER_ELECTRONICS
+}
+
+// Purposes and notice versions must be confirmed by legal/compliance before production.
+enum ConsentPurpose {
+  FINANCING_APPLICATION_PROCESSING
+  LENDER_DATA_SHARING
+}
+
+enum ConsentCaptureMethod {
+  CUSTOMER_CHECKOUT_SESSION
+  MERCHANT_ASSISTED
+}
+
+enum CheckoutSessionStatus {
+  ACTIVE
+  CONSUMED
+  EXPIRED
+  REVOKED
+}
+
+enum ApplicationStatus {
+  DRAFT
+  CUSTOMER_CONSENT_PENDING
+  SUBMITTED
+  LENDER_PROCESSING
+  OFFER_AVAILABLE
+  ADDITIONAL_INFORMATION_REQUIRED
+  DECLINED
+  CUSTOMER_ACCEPTED_OFFER
+  LENDER_FINAL_CONFIRMATION
+  DISBURSEMENT_PENDING
+  DISBURSED
+  CANCELLED
+  EXPIRED
+  TECHNICAL_FAILURE
+  MANUAL_REVIEW
+}
+
+enum ActorType {
+  MERCHANT_USER
+  ADMIN_USER
+  SYSTEM
+  LENDER
+}
+
+enum RoutingMode {
+  SEQUENTIAL
+  DISCOVERY
+}
+
+enum LenderType {
+  BANK
+  NBFC
+  OTHER
+}
+
+enum LenderStatus {
+  ACTIVE
+  INACTIVE
+}
+
+// Distinguishes a lender decline from technical problems. A technical error is never a decline.
+enum LenderAttemptOutcome {
+  PENDING
+  OFFERED
+  DECLINED
+  ADDITIONAL_INFO_REQUIRED
+  TIMEOUT
+  UNAVAILABLE
+  RATE_LIMITED
+  MALFORMED_RESPONSE
+  UNKNOWN
+  RECONCILING
+  CANCELLED
+}
+
+// An indicative eligibility result must never be presented as a sanctioned offer.
+enum OfferType {
+  INDICATIVE_ELIGIBILITY
+  FIRM_OFFER
+}
+
+enum OfferStatus {
+  ACTIVE
+  ACCEPTED
+  EXPIRED
+  WITHDRAWN
+  SUPERSEDED
+}
+
+enum RateType {
+  FIXED
+  FLOATING
+  FLAT
+  REDUCING_BALANCE
+  UNSPECIFIED
+}
+
+enum WebhookProcessingStatus {
+  RECEIVED
+  PROCESSED
+  FAILED
+  REJECTED_INVALID_SIGNATURE
+  IGNORED_OUT_OF_ORDER
+}
+
+// Purchase payments, loan disbursements, merchant settlements and Udhyam PAY commission
+// accounting are kept separate.
+enum TransactionType {
+  PURCHASE_PAYMENT
+  LOAN_DISBURSEMENT
+  MERCHANT_SETTLEMENT
+  REFUND
+}
+
+enum TransactionStatus {
+  PENDING
+  CONFIRMED
+  FAILED
+  REVERSED
+}
+
+enum ReconciliationStatus {
+  UNRECONCILED
+  MATCHED
+  MISMATCHED
+}
+
+enum DisbursementState {
+  PENDING
+  DISBURSED
+  FAILED
+  UNKNOWN
+}
+
+enum CommissionEntryType {
+  ACCRUAL
+  REVERSAL
+  ADJUSTMENT
+}
+
+// ---------------------------------------------------------------------------
+// Identity and merchants
+// ---------------------------------------------------------------------------
+
+model Merchant {
+  id                String         @id @default(uuid()) @db.Uuid
+  legalName         String
+  tradeName         String?
+  status            MerchantStatus @default(PENDING_VERIFICATION)
+  verifiedAt        DateTime?      @db.Timestamptz(3)
+  suspendedAt       DateTime?      @db.Timestamptz(3)
+  suspensionReason  String?
+  createdAt         DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime       @updatedAt @db.Timestamptz(3)
+
+  users              User[]
+  shops              Shop[]
+  customers          Customer[]
+  consents           CustomerConsent[]
+  purchases          Purchase[]
+  checkoutSessions   CheckoutSession[]
+  applications       FinancingApplication[]
+  lenderApplications LenderApplication[]
+  offers             FinancingOffer[]
+  transactions       Transaction[]
+  commissionEntries  CommissionEntry[]
+  auditLogs          AuditLog[]
+
+  @@index([status])
+  @@map("merchants")
+}
+
+// Permissions are derived from `role` by a static map in code (see the auth module);
+// no separate permissions table is needed at this stage.
+model User {
+  id                 String     @id @default(uuid()) @db.Uuid
+  email              String     @unique // stored lower-cased
+  passwordHash       String // Argon2id hash only
+  role               UserRole
+  status             UserStatus @default(ACTIVE)
+  merchantId         String?    @db.Uuid // null for ADMIN users
+  tokenVersion       Int        @default(0) // bump to revoke all access tokens
+  failedLoginCount   Int        @default(0)
+  lockedUntil        DateTime?  @db.Timestamptz(3)
+  lastLoginAt        DateTime?  @db.Timestamptz(3)
+  createdAt          DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime   @updatedAt @db.Timestamptz(3)
+
+  merchant        Merchant?        @relation(fields: [merchantId], references: [id])
+  refreshSessions RefreshSession[]
+
+  @@index([merchantId])
+  @@map("users")
+}
+
+model RefreshSession {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @db.Uuid
+  familyId     String    @db.Uuid // all rotations of one login share a family; reuse revokes the family
+  tokenHash    String    @unique // hash of the opaque refresh token; the token itself is never stored
+  expiresAt    DateTime  @db.Timestamptz(3)
+  revokedAt    DateTime? @db.Timestamptz(3)
+  replacedById String?   @db.Uuid
+  userAgent    String?
+  createdAt    DateTime  @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([familyId])
+  @@index([expiresAt])
+  @@map("refresh_sessions")
+}
+
+model Shop {
+  id         String     @id @default(uuid()) @db.Uuid
+  merchantId String     @db.Uuid
+  name       String
+  city       String
+  state      String
+  status     ShopStatus @default(ACTIVE)
+  createdAt  DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime   @updatedAt @db.Timestamptz(3)
+
+  merchant         Merchant               @relation(fields: [merchantId], references: [id])
+  purchases        Purchase[]
+  checkoutSessions CheckoutSession[]
+  applications     FinancingApplication[]
+
+  @@index([merchantId])
+  @@map("shops")
+}
+
+// ---------------------------------------------------------------------------
+// Customers, consent, purchases, checkout
+// ---------------------------------------------------------------------------
+
+// Data minimisation: only what is needed to identify the customer to the merchant and lender.
+// No Aadhaar, PAN, bank details, OTPs or identity documents are stored.
+model Customer {
+  id                 String    @id @default(uuid()) @db.Uuid
+  merchantId         String    @db.Uuid
+  fullName           String
+  phone              String // E.164 format
+  retentionExpiresAt DateTime? @db.Timestamptz(3) // drives the retention/deletion workflow
+  anonymizedAt       DateTime? @db.Timestamptz(3)
+  createdAt          DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime  @updatedAt @db.Timestamptz(3)
+
+  merchant     Merchant               @relation(fields: [merchantId], references: [id])
+  consents     CustomerConsent[]
+  purchases    Purchase[]
+  applications FinancingApplication[]
+
+  @@unique([merchantId, phone])
+  @@index([retentionExpiresAt])
+  @@map("customers")
+}
+
+model CustomerConsent {
+  id            String               @id @default(uuid()) @db.Uuid
+  merchantId    String               @db.Uuid
+  customerId    String               @db.Uuid
+  purpose       ConsentPurpose
+  noticeVersion String // version of the privacy notice the customer saw
+  captureMethod ConsentCaptureMethod
+  grantedAt     DateTime             @default(now()) @db.Timestamptz(3)
+  revokedAt     DateTime?            @db.Timestamptz(3)
+  createdAt     DateTime             @default(now()) @db.Timestamptz(3)
+
+  merchant Merchant @relation(fields: [merchantId], references: [id])
+  customer Customer @relation(fields: [customerId], references: [id])
+
+  @@index([customerId, purpose])
+  @@index([merchantId])
+  @@map("customer_consents")
+}
+
+model Purchase {
+  id                 String          @id @default(uuid()) @db.Uuid
+  merchantId         String          @db.Uuid
+  shopId             String          @db.Uuid
+  customerId         String?         @db.Uuid
+  productCategory    ProductCategory
+  productDescription String? // short free text, e.g. brand/model; no personal data
+  amountPaise        BigInt
+  currency           String          @default("INR")
+  idempotencyKey     String
+  createdAt          DateTime        @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime        @updatedAt @db.Timestamptz(3)
+
+  merchant         Merchant               @relation(fields: [merchantId], references: [id])
+  shop             Shop                   @relation(fields: [shopId], references: [id])
+  customer         Customer?              @relation(fields: [customerId], references: [id])
+  checkoutSessions CheckoutSession[]
+  applications     FinancingApplication[]
+
+  @@unique([merchantId, idempotencyKey])
+  @@index([merchantId, createdAt])
+  @@index([shopId])
+  @@index([customerId])
+  @@map("purchases")
+}
+
+// QR codes carry only the opaque token; the database stores only its hash.
+model CheckoutSession {
+  id              String                @id @default(uuid()) @db.Uuid
+  merchantId      String                @db.Uuid
+  shopId          String                @db.Uuid
+  purchaseId      String                @db.Uuid
+  createdByUserId String?               @db.Uuid
+  tokenHash       String                @unique
+  status          CheckoutSessionStatus @default(ACTIVE)
+  expiresAt       DateTime              @db.Timestamptz(3)
+  consumedAt      DateTime?             @db.Timestamptz(3)
+  revokedAt       DateTime?             @db.Timestamptz(3)
+  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
+
+  merchant Merchant @relation(fields: [merchantId], references: [id])
+  shop     Shop     @relation(fields: [shopId], references: [id])
+  purchase Purchase @relation(fields: [purchaseId], references: [id])
+
+  @@index([merchantId])
+  @@index([purchaseId])
+  @@index([expiresAt])
+  @@map("checkout_sessions")
+}
+
+// ---------------------------------------------------------------------------
+// Lenders and routing
+// ---------------------------------------------------------------------------
+
+model Lender {
+  id          String       @id @default(uuid()) @db.Uuid
+  code        String       @unique // stable identifier used in webhook URLs and adapter lookup
+  displayName String
+  type        LenderType
+  isSimulated Boolean      @default(true) // true for every mock adapter
+  status      LenderStatus @default(ACTIVE)
+  createdAt   DateTime     @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime     @updatedAt @db.Timestamptz(3)
+
+  configuration      LenderConfiguration?
+  lenderApplications LenderApplication[]
+  offers             FinancingOffer[]
+  webhookEvents      WebhookEvent[]
+  transactions       Transaction[]
+
+  @@map("lenders")
+}
+
+// Routing rules are configuration, not code. Credentials are never stored here:
+// `secretRef` is only the NAME of an environment variable or secret-manager entry.
+model LenderConfiguration {
+  id                   String            @id @default(uuid()) @db.Uuid
+  lenderId             String            @unique @db.Uuid
+  enabled              Boolean           @default(false)
+  priority             Int               @default(100) // lower runs first in sequential mode
+  minAmountPaise       BigInt?
+  maxAmountPaise       BigInt?
+  supportedCategories  ProductCategory[]
+  supportsDiscovery    Boolean           @default(false)
+  fallbackOnDecline    Boolean           @default(true)
+  requestTimeoutMs     Int               @default(10000)
+  maxSafeRetries       Int               @default(2) // applies to idempotent reads only, never to submissions
+  routingRules         Json? // validated by Zod in the orchestration module
+  secretRef            String?
+  updatedByUserId      String?           @db.Uuid
+  createdAt            DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime          @updatedAt @db.Timestamptz(3)
+
+  lender Lender @relation(fields: [lenderId], references: [id])
+
+  @@map("lender_configurations")
+}
+
+// ---------------------------------------------------------------------------
+// Financing applications
+// ---------------------------------------------------------------------------
+
+model FinancingApplication {
+  id                   String            @id @default(uuid()) @db.Uuid
+  merchantId           String            @db.Uuid
+  shopId               String            @db.Uuid
+  purchaseId           String            @db.Uuid
+  customerId           String            @db.Uuid
+  createdByUserId      String?           @db.Uuid
+  status               ApplicationStatus @default(DRAFT)
+  routingMode          RoutingMode       @default(SEQUENTIAL)
+  requestedAmountPaise BigInt // amount to be financed
+  downPaymentPaise     BigInt            @default(0)
+  requestedTenureMonths Int?
+  idempotencyKey       String
+  version              Int               @default(0) // optimistic locking for state changes
+  submittedAt          DateTime?         @db.Timestamptz(3)
+  expiresAt            DateTime?         @db.Timestamptz(3)
+  terminalAt           DateTime?         @db.Timestamptz(3)
+  createdAt            DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime          @updatedAt @db.Timestamptz(3)
+
+  merchant           Merchant                   @relation(fields: [merchantId], references: [id])
+  shop               Shop                       @relation(fields: [shopId], references: [id])
+  purchase           Purchase                   @relation(fields: [purchaseId], references: [id])
+  customer           Customer                   @relation(fields: [customerId], references: [id])
+  statusHistory      ApplicationStatusHistory[]
+  lenderApplications LenderApplication[]
+  offers             FinancingOffer[]
+  transactions       Transaction[]
+  commissionEntries  CommissionEntry[]
+
+  // Duplicate-submission protection: the same key from the same merchant returns the same application.
+  @@unique([merchantId, idempotencyKey])
+  @@index([merchantId, status, createdAt])
+  @@index([purchaseId])
+  @@index([customerId])
+  @@map("financing_applications")
+}
+
+// Append-only (enforced by trigger). One row per state change.
+model ApplicationStatusHistory {
+  id            String             @id @default(uuid()) @db.Uuid
+  applicationId String             @db.Uuid
+  fromStatus    ApplicationStatus?
+  toStatus      ApplicationStatus
+  actorType     ActorType
+  actorId       String? // user id; null for SYSTEM/LENDER
+  reason        String?
+  metadata      Json? // safe, non-sensitive context only
+  createdAt     DateTime           @default(now()) @db.Timestamptz(3)
+
+  application FinancingApplication @relation(fields: [applicationId], references: [id])
+
+  @@index([applicationId, createdAt])
+  @@map("application_status_history")
+}
+
+// One row per submission attempt to one lender.
+model LenderApplication {
+  id                   String               @id @default(uuid()) @db.Uuid
+  applicationId        String               @db.Uuid
+  merchantId           String               @db.Uuid
+  lenderId             String               @db.Uuid
+  attemptNo            Int // 1-based sequence within the application
+  requestKey           String               @unique // idempotency key sent to the lender
+  externalReference    String? // lender's own application reference
+  outcome              LenderAttemptOutcome @default(PENDING)
+  errorCode            String? // safe internal classification, never a raw lender message
+  responseHash         String? // hash of the lender response for forensics; payload itself is not stored
+  safeResponseSummary  Json? // minimal, non-sensitive fields only
+  reconcileAttempts    Int                  @default(0)
+  startedAt            DateTime             @default(now()) @db.Timestamptz(3)
+  completedAt          DateTime?            @db.Timestamptz(3)
+  latencyMs            Int?
+  createdAt            DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime             @updatedAt @db.Timestamptz(3)
+
+  application          FinancingApplication @relation(fields: [applicationId], references: [id])
+  merchant             Merchant             @relation(fields: [merchantId], references: [id])
+  lender               Lender               @relation(fields: [lenderId], references: [id])
+  offers               FinancingOffer[]
+  webhookEvents        WebhookEvent[]
+  transactions         Transaction[]
+  disbursementStatuses DisbursementStatus[]
+
+  @@unique([applicationId, attemptNo])
+  @@unique([lenderId, externalReference])
+  @@index([merchantId])
+  @@index([applicationId])
+  @@index([outcome])
+  @@map("lender_applications")
+}
+
+// Lender-provided terms are authoritative; this table stores them as received.
+model FinancingOffer {
+  id                   String      @id @default(uuid()) @db.Uuid
+  applicationId        String      @db.Uuid
+  lenderApplicationId  String      @db.Uuid
+  merchantId           String      @db.Uuid
+  lenderId             String      @db.Uuid
+  offerType            OfferType
+  status               OfferStatus @default(ACTIVE)
+  lenderOfferReference String
+  principalPaise       BigInt
+  downPaymentPaise     BigInt?
+  tenureMonths         Int
+  interestRatePercent  Decimal?    @db.Decimal(7, 4)
+  rateType             RateType    @default(UNSPECIFIED)
+  aprPercent           Decimal?    @db.Decimal(7, 4)
+  emiPaise             BigInt
+  processingFeePaise   BigInt?
+  taxesPaise           BigInt?
+  otherChargesPaise    BigInt?
+  totalRepayablePaise  BigInt?
+  repaymentSchedule    Json? // lender-supplied schedule/disclosures when provided
+  termsVersion         String?
+  termsUrl             String?
+  expiresAt            DateTime?   @db.Timestamptz(3)
+  isSimulated          Boolean     @default(false)
+  createdAt            DateTime    @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime    @updatedAt @db.Timestamptz(3)
+
+  application         FinancingApplication @relation(fields: [applicationId], references: [id])
+  lenderApplication   LenderApplication    @relation(fields: [lenderApplicationId], references: [id])
+  merchant            Merchant             @relation(fields: [merchantId], references: [id])
+  lender              Lender               @relation(fields: [lenderId], references: [id])
+
+  @@unique([lenderId, lenderOfferReference])
+  @@index([applicationId])
+  @@index([merchantId])
+  @@map("financing_offers")
+}
+
+// ---------------------------------------------------------------------------
+// Webhooks
+// ---------------------------------------------------------------------------
+
+// Raw bodies are NOT stored. We keep a hash plus a minimal safe summary.
+model WebhookEvent {
+  id                  String                  @id @default(uuid()) @db.Uuid
+  lenderId            String                  @db.Uuid
+  lenderApplicationId String?                 @db.Uuid
+  eventId             String // lender's unique event id, used for de-duplication
+  eventType           String?
+  signatureValid      Boolean
+  processingStatus    WebhookProcessingStatus @default(RECEIVED)
+  payloadHash         String
+  safePayloadSummary  Json?
+  errorCode           String?
+  receivedAt          DateTime                @default(now()) @db.Timestamptz(3)
+  processedAt         DateTime?               @db.Timestamptz(3)
+
+  lender            Lender             @relation(fields: [lenderId], references: [id])
+  lenderApplication LenderApplication? @relation(fields: [lenderApplicationId], references: [id])
+
+  @@unique([lenderId, eventId])
+  @@index([lenderApplicationId])
+  @@index([processingStatus, receivedAt])
+  @@map("webhook_events")
+}
+
+// ---------------------------------------------------------------------------
+// Financial records
+// ---------------------------------------------------------------------------
+
+// Only lender-confirmed money movements are recorded as CONFIRMED.
+model Transaction {
+  id                   String               @id @default(uuid()) @db.Uuid
+  merchantId           String               @db.Uuid
+  applicationId        String               @db.Uuid
+  lenderApplicationId  String?              @db.Uuid
+  lenderId             String?              @db.Uuid
+  type                 TransactionType
+  status               TransactionStatus    @default(PENDING)
+  amountPaise          BigInt
+  lenderTransactionRef String?
+  lenderConfirmedAt    DateTime?            @db.Timestamptz(3)
+  reconciliationStatus ReconciliationStatus @default(UNRECONCILED)
+  reconciledAt         DateTime?            @db.Timestamptz(3)
+  createdAt            DateTime             @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime             @updatedAt @db.Timestamptz(3)
+
+  merchant          Merchant              @relation(fields: [merchantId], references: [id])
+  application       FinancingApplication  @relation(fields: [applicationId], references: [id])
+  lenderApplication LenderApplication?    @relation(fields: [lenderApplicationId], references: [id])
+  lender            Lender?               @relation(fields: [lenderId], references: [id])
+  commissionEntries CommissionEntry[]
+
+  @@unique([lenderId, lenderTransactionRef, type])
+  @@index([merchantId, createdAt])
+  @@index([applicationId])
+  @@index([reconciliationStatus])
+  @@map("transactions")
+}
+
+// Append-only (enforced by trigger): each state is a new row, latest `recordedAt` wins.
+model DisbursementStatus {
+  id                  String            @id @default(uuid()) @db.Uuid
+  lenderApplicationId String            @db.Uuid
+  state               DisbursementState
+  amountPaise         BigInt?
+  lenderReference     String?
+  lenderReportedAt    DateTime?         @db.Timestamptz(3)
+  source              ActorType
+  recordedAt          DateTime          @default(now()) @db.Timestamptz(3)
+
+  lenderApplication LenderApplication @relation(fields: [lenderApplicationId], references: [id])
+
+  @@index([lenderApplicationId, recordedAt])
+  @@map("disbursement_statuses")
+}
+
+// Append-only ledger (enforced by trigger). Corrections are REVERSAL/ADJUSTMENT rows that
+// reference the original entry; amounts are always positive and the type gives the direction.
+// Commission rates are configuration: `ruleSnapshot` records the rule actually applied.
+model CommissionEntry {
+  id               String              @id @default(uuid()) @db.Uuid
+  merchantId       String              @db.Uuid
+  applicationId    String              @db.Uuid
+  transactionId    String              @db.Uuid
+  entryType        CommissionEntryType
+  amountPaise      BigInt
+  ruleCode         String
+  ruleSnapshot     Json
+  reversesEntryId  String?             @db.Uuid
+  note             String?
+  createdAt        DateTime            @default(now()) @db.Timestamptz(3)
+
+  merchant      Merchant              @relation(fields: [merchantId], references: [id])
+  application   FinancingApplication  @relation(fields: [applicationId], references: [id])
+  transaction   Transaction           @relation(fields: [transactionId], references: [id])
+  reversesEntry CommissionEntry?      @relation("CommissionReversal", fields: [reversesEntryId], references: [id])
+  reversals     CommissionEntry[]     @relation("CommissionReversal")
+
+  @@index([merchantId, createdAt])
+  @@index([transactionId])
+  @@map("commission_entries")
+}
+
+// ---------------------------------------------------------------------------
+// Audit
+// ---------------------------------------------------------------------------
+
+// Append-only (enforced by trigger). Metadata must never contain personal data or secrets.
+model AuditLog {
+  id          String    @id @default(uuid()) @db.Uuid
+  actorType   ActorType
+  actorUserId String?   @db.Uuid
+  merchantId  String?   @db.Uuid
+  action      String // e.g. "merchant.suspended", "lender_config.updated"
+  entityType  String
+  entityId    String?
+  requestId   String?
+  metadata    Json?
+  createdAt   DateTime  @default(now()) @db.Timestamptz(3)
+
+  merchant Merchant? @relation(fields: [merchantId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([merchantId, createdAt])
+  @@index([actorUserId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}

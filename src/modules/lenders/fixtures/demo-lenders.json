@@ -1,0 +1,52 @@
+[
+  {
+    "code": "DEMO_BANK_ALPHA",
+    "displayName": "[DEMO] Alpha Digital Bank",
+    "type": "BANK",
+    "isSimulated": true,
+    "defaultInterestRatePercent": 11.5,
+    "minAmountPaise": 500000,
+    "maxAmountPaise": 50000000,
+    "supportedCategories": ["SMARTPHONE", "LAPTOP", "TELEVISION", "AIR_CONDITIONER"],
+    "supportsDiscovery": true,
+    "priority": 10,
+    "termsUrl": "https://demo.udhyam.example/terms/alpha-bank",
+    "termsVersion": "DEMO-v1.0"
+  },
+  {
+    "code": "DEMO_NBFC_BETA",
+    "displayName": "[DEMO] Beta Retail Finance NBFC",
+    "type": "NBFC",
+    "isSimulated": true,
+    "defaultInterestRatePercent": 14.0,
+    "minAmountPaise": 100000,
+    "maxAmountPaise": 30000000,
+    "supportedCategories": [
+      "SMARTPHONE",
+      "TELEVISION",
+      "REFRIGERATOR",
+      "WASHING_MACHINE",
+      "LAPTOP",
+      "OTHER_ELECTRONICS"
+    ],
+    "supportsDiscovery": true,
+    "priority": 20,
+    "termsUrl": "https://demo.udhyam.example/terms/beta-finance",
+    "termsVersion": "DEMO-v1.0"
+  },
+  {
+    "code": "DEMO_GAMMA_CREDIT",
+    "displayName": "[DEMO] Gamma Consumer Credit",
+    "type": "NBFC",
+    "isSimulated": true,
+    "defaultInterestRatePercent": 16.5,
+    "minAmountPaise": 50000,
+    "maxAmountPaise": 15000000,
+    "supportedCategories": ["SMARTPHONE", "OTHER_ELECTRONICS"],
+    "supportsDiscovery": true,
+    "priority": 30,
+    "termsUrl": "https://demo.udhyam.example/terms/gamma-credit",
+    "termsVersion": "DEMO-v1.0"
+  }
+]
+

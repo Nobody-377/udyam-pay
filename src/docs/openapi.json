@@ -1,0 +1,293 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Udhyam PAY Backend API",
+    "version": "1.0.0",
+    "description": "B2B2C Multi-Lender EMI Financing Orchestration Platform API for offline retailers in India."
+  },
+  "servers": [
+    {
+      "url": "/api/v1",
+      "description": "API v1 Endpoint"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "JWT Access Token (15m validity). Provided in Authorization header as 'Bearer <token>'."
+      },
+      "LenderSignatureAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-Lender-Signature",
+        "description": "HMAC SHA-256 signature calculated over timestamp.payload using lender secret."
+      }
+    },
+    "schemas": {
+      "ApiSuccessEnvelope": {
+        "type": "object",
+        "required": ["success", "data"],
+        "properties": {
+          "success": { "type": "boolean", "const": true },
+          "data": { "type": "object" },
+          "meta": { "type": "object" }
+        }
+      },
+      "ApiErrorEnvelope": {
+        "type": "object",
+        "required": ["success", "error"],
+        "properties": {
+          "success": { "type": "boolean", "const": false },
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "requestId"],
+            "properties": {
+              "code": { "type": "string" },
+              "message": { "type": "string" },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "path": { "type": "string" },
+                    "message": { "type": "string" }
+                  }
+                }
+              },
+              "requestId": { "type": "string" }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register merchant owner and merchant organization",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "legalName"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string", "minLength": 8 },
+                  "legalName": { "type": "string" },
+                  "tradeName": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Merchant owner registered successfully" },
+          "400": { "description": "Validation error" },
+          "409": { "description": "Email already exists" }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Authenticate user, returns JWT and refresh token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Tokens issued" },
+          "401": { "description": "Invalid credentials" },
+          "423": { "description": "Account locked after 5 failed attempts" }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Rotate refresh token family and issue new access token",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["refreshToken"],
+                "properties": {
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Tokens refreshed" },
+          "401": { "description": "Invalid, expired, or reused refresh token (family revoked)" }
+        }
+      }
+    },
+    "/purchases": {
+      "post": {
+        "summary": "Create purchase record idempotently",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "in": "header", "name": "Idempotency-Key", "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["shopId", "productCategory", "amountPaise", "idempotencyKey"],
+                "properties": {
+                  "shopId": { "type": "string", "format": "uuid" },
+                  "customerId": { "type": "string", "format": "uuid" },
+                  "productCategory": { "type": "string" },
+                  "productDescription": { "type": "string" },
+                  "amountPaise": { "type": "string", "description": "Amount in integer paise" },
+                  "idempotencyKey": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Purchase created or existing returned" }
+        }
+      }
+    },
+    "/checkout/sessions": {
+      "post": {
+        "summary": "Create checkout session and QR payload for counter scanning",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["shopId", "purchaseId"],
+                "properties": {
+                  "shopId": { "type": "string", "format": "uuid" },
+                  "purchaseId": { "type": "string", "format": "uuid" },
+                  "validityMinutes": { "type": "integer", "default": 30 }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Session created with QR payload" }
+        }
+      }
+    },
+    "/checkout/sessions/{token}": {
+      "get": {
+        "summary": "Public endpoint for customer scanning QR code",
+        "parameters": [
+          { "in": "path", "name": "token", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Active session purchase details" },
+          "404": { "description": "Session not found" },
+          "409": { "description": "Session expired, consumed, or revoked" }
+        }
+      }
+    },
+    "/applications": {
+      "post": {
+        "summary": "Create financing application",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["shopId", "purchaseId", "customerId", "requestedAmountPaise"],
+                "properties": {
+                  "shopId": { "type": "string", "format": "uuid" },
+                  "purchaseId": { "type": "string", "format": "uuid" },
+                  "customerId": { "type": "string", "format": "uuid" },
+                  "requestedAmountPaise": { "type": "string" },
+                  "downPaymentPaise": { "type": "string", "default": "0" },
+                  "requestedTenureMonths": { "type": "integer" },
+                  "routingMode": { "type": "string", "enum": ["SEQUENTIAL", "DISCOVERY"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Application created in CUSTOMER_CONSENT_PENDING" },
+          "409": { "description": "One active application per purchase violation or duplicate key" }
+        }
+      }
+    },
+    "/applications/{id}/submit": {
+      "post": {
+        "summary": "Submit application to lender waterfall orchestrator",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Waterfall evaluated, returns updated application with offers" }
+        }
+      }
+    },
+    "/applications/{id}/offers/{offerId}/accept": {
+      "post": {
+        "summary": "Customer accepts lender offer",
+        "security": [{ "BearerAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "id", "required": true, "schema": { "type": "string", "format": "uuid" } },
+          { "in": "path", "name": "offerId", "required": true, "schema": { "type": "string", "format": "uuid" } }
+        ],
+        "responses": {
+          "200": { "description": "Offer accepted, supersedes other offers, transitions application" }
+        }
+      }
+    },
+    "/webhooks/lenders/{code}": {
+      "post": {
+        "summary": "Lender webhook event ingestion with signature verification",
+        "security": [{ "LenderSignatureAuth": [] }],
+        "parameters": [
+          { "in": "path", "name": "code", "required": true, "schema": { "type": "string" } },
+          { "in": "header", "name": "X-Lender-Signature", "required": true, "schema": { "type": "string" } },
+          { "in": "header", "name": "X-Lender-Timestamp", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Webhook received and processed" },
+          "401": { "description": "Invalid signature or timestamp expired" }
+        }
+      }
+    },
+    "/ledger/commission": {
+      "get": {
+        "summary": "Get merchant commission summary and entries",
+        "security": [{ "BearerAuth": [] }],
+        "responses": {
+          "200": { "description": "Total accrued, reversed, and net commission in paise" }
+        }
+      }
+    }
+  }
+}
+
