@@ -1,4 +1,4 @@
-# Udhyam PAY — Current Codebase & Verification Status
+# Udyam PAY — Current Codebase & Verification Status
 
 **Audit & Verification Date:** November 1, 2026  
 **Auditor:** Senior Backend Architect, Application Security Engineer, PostgreSQL Specialist, Test Engineer  
@@ -59,7 +59,7 @@
   ```text
   Compiling verification script...
   Running logic verification on Node.js runtime...
-  --- UDHYAM PAY BACKEND LOGIC VERIFICATION ---
+  --- UDYAM PAY BACKEND LOGIC VERIFICATION ---
 
   [1/10] State Machine Invariants:
     [PASS] Terminal states have zero outgoing transitions
@@ -171,4 +171,4 @@ In accordance with strict verification rules:
 
 **STATUS: IMPLEMENTED & VERIFIED — DEPLOYMENT INFRASTRUCTURE BLOCKED**
 
-The Udhyam PAY backend is completely and substantively implemented. All 14 planned phases, domain logic, state machines, financial arithmetic, and security controls are authored and verified on Node 22 with 19 native logic tests and 112 Vitest tests passing (100%). Live database execution against external PostgreSQL and Docker image builds remain blocked solely by external host daemon availability.
+The Udyam PAY backend is completely and substantively implemented. All 14 planned phases, domain logic, state machines, financial arithmetic, and security controls are authored and verified on Node 22 with 19 native logic tests and 112 Vitest tests passing (100%). Live database execution against external PostgreSQL and Docker image builds remain blocked solely by external host daemon availability.

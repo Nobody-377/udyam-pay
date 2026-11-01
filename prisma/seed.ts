@@ -5,10 +5,10 @@ import { DEMO_LENDERS_SEED_DATA } from './seed-demo';
 const prisma = new PrismaClient();
 
 async function main() {
-  process.stdout.write('Seeding Udhyam PAY database...\n');
+  process.stdout.write('Seeding Udyam PAY database...\n');
 
   // 1. Seed System Administrator
-  const adminEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@udhyam.example';
+  const adminEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@udyam.example';
   const adminPassword = process.env.INITIAL_ADMIN_PASSWORD || 'AdminPassword123!';
   const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 

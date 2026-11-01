@@ -38,7 +38,7 @@ export function buildLoggerOptions(
 ): LoggerOptions {
   const options: LoggerOptions = {
     level: config.LOG_LEVEL,
-    base: { service: 'udhyam-pay-backend', env: config.NODE_ENV },
+    base: { service: 'udyam-pay-backend', env: config.NODE_ENV },
     timestamp: pino.stdTimeFunctions.isoTime,
     redact: { paths: REDACT_PATHS, censor: '[REDACTED]' },
   };

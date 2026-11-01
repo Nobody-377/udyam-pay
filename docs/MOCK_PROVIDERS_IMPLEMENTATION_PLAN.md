@@ -1,4 +1,4 @@
-# Udhyam PAY — Mock JSON Providers Implementation Plan
+# Udyam PAY — Mock JSON Providers Implementation Plan
 
 **Date**: November 2026  
 **Status**: Ready for Implementation  

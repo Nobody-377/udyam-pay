@@ -1,16 +1,16 @@
-# Udhyam PAY — Comprehensive Demo Deployment & Readiness Audit Report
+# Udyam PAY — Comprehensive Demo Deployment & Readiness Audit Report
 
 **Document Reference**: `docs/integration-readiness/DEMO_READINESS_REPORT.md`  
 **Date**: November 1, 2026  
 **Auditor / Engineering Role**: Senior Backend Architect, Application Security Engineer & Systems Auditor  
-**Repository**: `udhyam-pay-backend`  
+**Repository**: `udyam-pay-backend`  
 **Current Status**: **Demo Deployment Ready with Identified Limitations**  
 
 ---
 
 ## 1. Executive Summary
 
-This report provides the definitive engineering audit of the **Udhyam PAY** backend following the implementation of the mock JSON provider architecture, server startup remediation, deterministic demo lender database seeding, and CORS hardening.
+This report provides the definitive engineering audit of the **Udyam PAY** backend following the implementation of the mock JSON provider architecture, server startup remediation, deterministic demo lender database seeding, and CORS hardening.
 
 The platform is designed as an RBI-compliant, multi-lender checkout financing orchestration engine (modular monolith). The platform maintains strict data minimization (no Aadhaar, PAN, or bank credentials stored), immutable double-entry commission accounting, integer-paise financial arithmetic (`BigInt`), and a 15-state deterministic financing application lifecycle.
 
@@ -46,7 +46,7 @@ The platform is designed as an RBI-compliant, multi-lender checkout financing or
   4. Added npm scripts `"seed:demo": "tsx prisma/seed-demo.ts"` and `"prisma:seed:demo": "tsx prisma/seed-demo.ts"`.
 
 ### 2.3 CORS Hardening & Web Security
-- **Origin Validation**: `src/config/env.ts` parses `CORS_ALLOWED_ORIGINS` with a custom Zod schema that enforces exact protocols and origins (e.g. `https://demo.udhyam.example,http://localhost:5173`). Wildcard subdomains (`*.example.com`), universal wildcards (`*`), and trailing slashes are strictly rejected.
+- **Origin Validation**: `src/config/env.ts` parses `CORS_ALLOWED_ORIGINS` with a custom Zod schema that enforces exact protocols and origins (e.g. `https://demo.udyam.example,http://localhost:5173`). Wildcard subdomains (`*.example.com`), universal wildcards (`*`), and trailing slashes are strictly rejected.
 - **Credentials Handling**: `credentials: false` is hardcoded in `src/app.ts`. The platform uses `Authorization: Bearer <JWT>` headers instead of ambient browser cookies, eliminating CSRF vulnerabilities.
 - **Preflight Caching**: HTTP `OPTIONS` requests cache responses for 600 seconds (`maxAge: 600`).
 - **HTTP Security Headers**: `helmet` enforces `nosniff`, `X-Frame-Options: SAMEORIGIN`, and removes `X-Powered-By`.
@@ -112,7 +112,7 @@ Total Tests: 151 passed (151)
 2. **Lack of Digital KYC**: No live integration with UIDAI (Aadhaar OTP), DigiLocker, or CKYC.
 3. **Lack of Banking Rails**: No live penny-drop bank account verification or NPCI e-NACH/UPI Autopay mandate registration.
 4. **Lack of Digital Loan Agreement Execution**: No Aadhaar e-Sign or digital Key Fact Statement (KFS) signing via an Electronic Signature Provider (e.g. Digio, Leegality).
-5. **Regulatory Status**: Real lending in India requires executed tripartite agreements between Udhyam PAY (LSP), the merchant, and regulated entities (Banks/NBFCs) under RBI digital lending guidelines.
+5. **Regulatory Status**: Real lending in India requires executed tripartite agreements between Udyam PAY (LSP), the merchant, and regulated entities (Banks/NBFCs) under RBI digital lending guidelines.
 
 ---
 
@@ -120,5 +120,5 @@ Total Tests: 151 passed (151)
 
 ### **Demo deployment ready with identified limitations.**
 
-The Udhyam PAY backend is completely verified, packaged, and documented for merchant presentations, partner demonstrations, and frontend UI integration using mock JSON providers. Live lending operations remain securely blocked until genuine aggregator API access, KYC rails, mandate infrastructure, and regulatory agreements are finalized.
+The Udyam PAY backend is completely verified, packaged, and documented for merchant presentations, partner demonstrations, and frontend UI integration using mock JSON providers. Live lending operations remain securely blocked until genuine aggregator API access, KYC rails, mandate infrastructure, and regulatory agreements are finalized.
 

@@ -130,7 +130,7 @@ const DEFAULT_LENDERS: DemoLenderFixture[] = [
     supportedCategories: ['SMARTPHONE', 'LAPTOP', 'TELEVISION', 'AIR_CONDITIONER'],
     supportsDiscovery: true,
     priority: 10,
-    termsUrl: 'https://demo.udhyam.example/terms/alpha-bank',
+    termsUrl: 'https://demo.udyam.example/terms/alpha-bank',
     termsVersion: 'DEMO-v1.0',
   },
   {
@@ -151,7 +151,7 @@ const DEFAULT_LENDERS: DemoLenderFixture[] = [
     ],
     supportsDiscovery: true,
     priority: 20,
-    termsUrl: 'https://demo.udhyam.example/terms/beta-finance',
+    termsUrl: 'https://demo.udyam.example/terms/beta-finance',
     termsVersion: 'DEMO-v1.0',
   },
   {
@@ -165,7 +165,7 @@ const DEFAULT_LENDERS: DemoLenderFixture[] = [
     supportedCategories: ['SMARTPHONE', 'OTHER_ELECTRONICS'],
     supportsDiscovery: true,
     priority: 30,
-    termsUrl: 'https://demo.udhyam.example/terms/gamma-credit',
+    termsUrl: 'https://demo.udyam.example/terms/gamma-credit',
     termsVersion: 'DEMO-v1.0',
   },
 ];

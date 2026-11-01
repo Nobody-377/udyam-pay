@@ -123,7 +123,7 @@ describe('Demo Seeder & Safety Guards', () => {
         user: {
           findUnique: async () => ({
             id: 'existing-admin-id',
-            email: 'admin@udhyam.example',
+            email: 'admin@udyam.example',
             role: 'ADMIN',
           }),
           create: async () => {
@@ -147,7 +147,7 @@ describe('Demo Seeder & Safety Guards', () => {
 
       const result = await seedDemoEntities(mockPrisma);
 
-      expect(result.adminEmail).toBe('admin@udhyam.example');
+      expect(result.adminEmail).toBe('admin@udyam.example');
       expect(userCreateCount).toBe(0);
       expect(merchantCreateCount).toBe(0);
       expect(shopCreateCount).toBe(0);

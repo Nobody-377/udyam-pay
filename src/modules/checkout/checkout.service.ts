@@ -24,7 +24,7 @@ export interface CheckoutSessionDetails {
 export class CheckoutService {
   constructor(
     private readonly stores: AppStores,
-    private readonly baseUrl = 'https://pay.udhyam.example',
+    private readonly baseUrl = 'https://pay.udyam.example',
   ) {}
 
   private hashToken(rawToken: string): string {

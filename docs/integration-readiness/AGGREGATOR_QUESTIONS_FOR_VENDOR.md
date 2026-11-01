@@ -1,4 +1,4 @@
-# Udhyam PAY — Aggregator Discovery & Due Diligence Questionnaire
+# Udyam PAY — Aggregator Discovery & Due Diligence Questionnaire
 
 **Document Reference**: `docs/integration-readiness/AGGREGATOR_QUESTIONS_FOR_VENDOR.md`  
 **Date**: November 2026  
@@ -9,7 +9,7 @@
 
 ## Instructions for Vendor & Partnership Team
 
-Udhyam PAY is an in-store POS checkout financing platform enabling retail electronics customers to purchase smartphones, laptops, and home appliances on EMI.
+Udyam PAY is an in-store POS checkout financing platform enabling retail electronics customers to purchase smartphones, laptops, and home appliances on EMI.
 
 Every question below is categorized with our current assessment status:
 - `[ ] Confirmed by Evidence`: Verified by official documentation or test credentials.
@@ -41,7 +41,7 @@ Every question below is categorized with our current assessment status:
 | **2.1** | What is the exact cryptographic signature mechanism for inbound webhooks (e.g. HMAC-SHA256, Ed25519, or RSA signatures)? Which request headers carry the signature and timestamp? | `[?] Requires Clarification` | |
 | **2.2** | Does your webhook engine sign the raw request body including timestamps to defend against replay attacks? What is the recommended replay window tolerance (e.g. 300 seconds)? | `[?] Requires Clarification` | |
 | **2.3** | What is your automated retry schedule if our webhook endpoint returns HTTP 5xx or times out (e.g. exponential backoff over 24 hours)? | `[?] Requires Clarification` | |
-| **2.4** | What is your expected webhook response SLA (e.g. synchronous HTTP 200 OK within 500ms before background processing)? | `[ ] Confirmed by Evidence` | Udhyam PAY returns 200 OK immediately and processes in background. |
+| **2.4** | What is your expected webhook response SLA (e.g. synchronous HTTP 200 OK within 500ms before background processing)? | `[ ] Confirmed by Evidence` | Udyam PAY returns 200 OK immediately and processes in background. |
 | **2.5** | Can multiple webhook endpoints be registered per environment (e.g. separate URLs for staging, UAT, and production)? | `[?] Requires Clarification` | |
 | **2.6** | Do you provide an event replay or manual re-dispatch mechanism via your partner portal for incident remediation? | `[?] Requires Clarification` | |
 
@@ -52,7 +52,7 @@ Every question below is categorized with our current assessment status:
 | # | Question / Requirement | Status | Vendor Response / Resolution |
 | :-: | :--- | :-: | :--- |
 | **3.1** | Which specific commercial Banks and NBFCs are actively live and disbursing through your platform for consumer electronics checkout loans? | `[!] Unknown / Blocker` | |
-| **3.2** | What are the minimum and maximum loan ticket sizes supported by your partner lenders (Udhyam target: Rs 10,000 to Rs 2,50,000)? | `[?] Requires Clarification` | |
+| **3.2** | What are the minimum and maximum loan ticket sizes supported by your partner lenders (Udyam target: Rs 10,000 to Rs 2,50,000)? | `[?] Requires Clarification` | |
 | **3.3** | What loan tenures are available across partner lenders (e.g. 3, 6, 9, 12, 18, 24 months)? | `[?] Requires Clarification` | |
 | **3.4** | Do partner lenders support **0% Subvented EMI** (where the merchant or OEM manufacturer subvents the interest)? How are subvention fees deducted or invoiced? | `[!] Unknown / Blocker` | Critical for in-store consumer electronics conversion. |
 | **3.5** | What customer demographics and employment types are eligible (salaried, self-employed, gig-workers, new-to-credit)? | `[?] Requires Clarification` | |
@@ -65,10 +65,10 @@ Every question below is categorized with our current assessment status:
 
 | # | Question / Requirement | Status | Vendor Response / Resolution |
 | :-: | :--- | :-: | :--- |
-| **4.1** | Do you support a **Headless Server-to-Server API** where Udhyam PAY renders all UI screens, or is an **Embedded Webview / SDK** mandatory for customer interaction? | `[!] Unknown / Blocker` | Determines frontend architecture and DPDP data scope. |
-| **4.2** | If an Embedded Webview or Web SDK is required, can it be fully white-labeled or co-branded with Udhyam PAY and the retail merchant's branding? | `[?] Requires Clarification` | |
-| **4.3** | In multi-lender scenarios, does your API return **all qualifying offers** simultaneously (discovery mode) so Udhyam PAY can present a comparison table to the customer? | `[!] Unknown / Blocker` | Core feature of Udhyam PAY. |
-| **4.4** | Can Udhyam PAY dictate or influence the lender waterfall priority via API configuration, or does your engine enforce rigid algorithmic routing? | `[?] Requires Clarification` | |
+| **4.1** | Do you support a **Headless Server-to-Server API** where Udyam PAY renders all UI screens, or is an **Embedded Webview / SDK** mandatory for customer interaction? | `[!] Unknown / Blocker` | Determines frontend architecture and DPDP data scope. |
+| **4.2** | If an Embedded Webview or Web SDK is required, can it be fully white-labeled or co-branded with Udyam PAY and the retail merchant's branding? | `[?] Requires Clarification` | |
+| **4.3** | In multi-lender scenarios, does your API return **all qualifying offers** simultaneously (discovery mode) so Udyam PAY can present a comparison table to the customer? | `[!] Unknown / Blocker` | Core feature of Udyam PAY. |
+| **4.4** | Can Udyam PAY dictate or influence the lender waterfall priority via API configuration, or does your engine enforce rigid algorithmic routing? | `[?] Requires Clarification` | |
 | **4.5** | How does the journey handle fallback if the customer's primary chosen lender declines during underwriting? Does it automatically fall back to the secondary pre-approved offer? | `[?] Requires Clarification` | |
 | **4.6** | If underwriting requires additional documentation (e.g. bank statements), how is the user notified and where are files uploaded? | `[?] Requires Clarification` | |
 
@@ -80,7 +80,7 @@ Every question below is categorized with our current assessment status:
 | :-: | :--- | :-: | :--- |
 | **5.1** | Which Credit Bureaus are pulled (CIBIL, Experian, Equifax, CRIF High Mark)? Does the aggregator absorb bureau pull costs or pass them through? | `[?] Requires Clarification` | |
 | **5.2** | How is customer KYC executed? Do you support DigiLocker, Aadhaar OTP XML, and CKYC lookup? | `[?] Requires Clarification` | |
-| **5.3** | Does Udhyam PAY ever need to handle or store raw Aadhaar numbers or OTPs, or is this entirely confined within your compliant environment? | `[ ] Confirmed by Evidence` | Udhyam PAY database stores zero Aadhaar/PAN. Must stay in aggregator view. |
+| **5.3** | Does Udyam PAY ever need to handle or store raw Aadhaar numbers or OTPs, or is this entirely confined within your compliant environment? | `[ ] Confirmed by Evidence` | Udyam PAY database stores zero Aadhaar/PAN. Must stay in aggregator view. |
 | **5.4** | How is bank account verification conducted (Penny Drop IMPS vs UPI reverse penny drop)? What name-match confidence threshold is enforced by lenders? | `[?] Requires Clarification` | |
 | **5.5** | What methods are supported for electronic mandates (e-NACH NetBanking, Debit Card, UPI Autopay)? What is the failure / drop-off rate on UPI Autopay? | `[?] Requires Clarification` | |
 | **5.6** | How is the digital loan agreement executed? Do you integrate with an Electronic Signature Provider (e.g. Digio, Leegality, NSDL) for Aadhaar e-Sign? | `[?] Requires Clarification` | |
@@ -94,9 +94,9 @@ Every question below is categorized with our current assessment status:
 | :-: | :--- | :-: | :--- |
 | **6.1** | Under RBI Digital Lending Guidelines, who does the lender disburse funds to: directly to the customer's bank account, or to a merchant nodal/escrow account? | `[!] Unknown / Blocker` | POS checkout financing typically settles directly to the retail merchant. |
 | **6.2** | What banking rails are used for disbursement (IMPS, NEFT, RTGS)? What is the typical disbursement settlement window (instant vs T+1)? | `[?] Requires Clarification` | |
-| **6.3** | How is the bank UTR (Unique Transaction Reference) delivered to Udhyam PAY (real-time webhook vs batch reconciliation file)? | `[?] Requires Clarification` | |
+| **6.3** | How is the bank UTR (Unique Transaction Reference) delivered to Udyam PAY (real-time webhook vs batch reconciliation file)? | `[?] Requires Clarification` | |
 | **6.4** | In the event of a customer order cancellation or item return before delivery, what is the exact loan cancellation and refund protocol? | `[?] Requires Clarification` | |
-| **6.5** | How are merchant subventions, platform processing fees, and platform commissions settled? Does the lender deduct fees at source or remit gross? | `[!] Unknown / Blocker` | Directly impacts Udhyam PAY commission ledger. |
+| **6.5** | How are merchant subventions, platform processing fees, and platform commissions settled? Does the lender deduct fees at source or remit gross? | `[!] Unknown / Blocker` | Directly impacts Udyam PAY commission ledger. |
 
 ---
 
@@ -105,7 +105,7 @@ Every question below is categorized with our current assessment status:
 | # | Question / Requirement | Status | Vendor Response / Resolution |
 | :-: | :--- | :-: | :--- |
 | **7.1** | Are all underlying partner lenders formally registered as Regulated Entities (REs) with RBI? | `[ ] Confirmed by Evidence` | Regulatory prerequisite. |
-| **7.2** | Does the aggregator provide a standard Tripartite Agreement template between the RE, Aggregator, and Udhyam PAY (as Lending Service Provider - LSP)? | `[!] Unknown / Blocker` | Mandatory under RBI Digital Lending Guidelines dated Sept 2022. |
+| **7.2** | Does the aggregator provide a standard Tripartite Agreement template between the RE, Aggregator, and Udyam PAY (as Lending Service Provider - LSP)? | `[!] Unknown / Blocker` | Mandatory under RBI Digital Lending Guidelines dated Sept 2022. |
 | **7.3** | Are all customer data, transaction records, and document archives stored exclusively on servers located physically within India? | `[?] Requires Clarification` | Mandatory under RBI and DPDP regulations. |
 | **7.4** | What audit logs and consent timestamps are captured to defend against regulatory audits and customer disputes? | `[?] Requires Clarification` | |
 | **7.5** | Can you provide a copy of your latest SOC 2 Type II and ISO 27001 audit certifications, as well as recent VAPT executive summaries? | `[?] Requires Clarification` | |

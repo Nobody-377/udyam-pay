@@ -1,16 +1,16 @@
-# Udhyam PAY — Current Integration & Architecture Audit
+# Udyam PAY — Current Integration & Architecture Audit
 
 **Document Reference**: `docs/integration-readiness/CURRENT_INTEGRATION_AUDIT.md`  
 **Audit Date**: November 2026  
 **Auditor**: Senior Backend Architect & Technical Auditor  
-**Repository**: Udhyam PAY Backend  
+**Repository**: Udyam PAY Backend  
 **Audit Type**: Read-Only Architecture, External Integration & Backend Readiness Inspection  
 
 ---
 
 ## 1. Executive Architecture Summary
 
-Udhyam PAY is designed as an omni-channel, multi-lender point-of-sale (POS) checkout financing platform in India. It empowers merchants to offer instant digital EMI and consumer loans to customers purchasing electronics and consumer durables.
+Udyam PAY is designed as an omni-channel, multi-lender point-of-sale (POS) checkout financing platform in India. It empowers merchants to offer instant digital EMI and consumer loans to customers purchasing electronics and consumer durables.
 
 The platform architecture follows a modular monolith pattern, built on:
 - **Runtime**: Node.js 22 LTS with ECMAScript Modules (`"type": "module"` in `package.json`).
@@ -97,8 +97,8 @@ In India, no regulated entity (RE) or aggregator can underwrite a loan without a
 3. Bank Account details (for penny drop and disbursement).
 4. Aadhaar / CKYC / DigiLocker verification.
 
-Because Udhyam PAY does not store PAN or Aadhaar, **Udhyam PAY cannot perform server-to-server underwriting using only its internal database tables**.
-**Resolution**: Udhyam PAY must leverage the aggregator's **Embedded Journey / Web SDK / Hosted Webview**, where the customer enters PAN and completes KYC directly within the aggregator's secure, RBI-regulated compliance boundary, returning only tokenized verification references to Udhyam PAY.
+Because Udyam PAY does not store PAN or Aadhaar, **Udyam PAY cannot perform server-to-server underwriting using only its internal database tables**.
+**Resolution**: Udyam PAY must leverage the aggregator's **Embedded Journey / Web SDK / Hosted Webview**, where the customer enters PAN and completes KYC directly within the aggregator's secure, RBI-regulated compliance boundary, returning only tokenized verification references to Udyam PAY.
 
 ### Finding 2: State Machine Lifecycle Gaps Between Offer Acceptance and Disbursement
 In `src/modules/applications/application-state-machine.ts`:
@@ -171,7 +171,7 @@ The audit verified the codebase by running all available non-destructive verific
 
 ## 6. Audit Conclusion
 
-The Udhyam PAY backend has a solid architectural core: its security, state management, money arithmetic, tenant isolation, and commission accounting are fully implemented, tested, and production-grade.
+The Udyam PAY backend has a solid architectural core: its security, state management, money arithmetic, tenant isolation, and commission accounting are fully implemented, tested, and production-grade.
 
 However, **all external lending and verification operations are currently 100% simulated via `MockLenderAdapter`**. There are no live external API connections, credentials, or third-party SDKs. The platform is ready for aggregator integration, provided a clean abstraction layer is introduced.
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { EnvValidationError, parseEnv } from '../../src/config/env';
 
-const VALID_URL = 'postgresql://user:s3cretpass@localhost:5432/udhyam';
+const VALID_URL = 'postgresql://user:s3cretpass@localhost:5432/udyam';
 
 describe('parseEnv', () => {
   it('applies defaults when only DATABASE_URL is provided', () => {
@@ -91,7 +91,7 @@ describe('parseEnv', () => {
         parseEnv({
           DATABASE_URL: VALID_URL,
           NODE_ENV: 'production',
-          JWT_SECRET: 'udhyam-pay-dev-super-secret-jwt-key-min-32-chars!',
+          JWT_SECRET: 'udyam-pay-dev-super-secret-jwt-key-min-32-chars!',
         }),
       ).toThrow(EnvValidationError);
     });
@@ -122,13 +122,13 @@ describe('parseEnv', () => {
         DATABASE_URL: VALID_URL,
         NODE_ENV: 'development',
       });
-      expect(devConfig.JWT_SECRET).toBe('udhyam-pay-dev-super-secret-jwt-key-min-32-chars!');
+      expect(devConfig.JWT_SECRET).toBe('udyam-pay-dev-super-secret-jwt-key-min-32-chars!');
 
       const testConfig = parseEnv({
         DATABASE_URL: VALID_URL,
         NODE_ENV: 'test',
       });
-      expect(testConfig.JWT_SECRET).toBe('udhyam-pay-dev-super-secret-jwt-key-min-32-chars!');
+      expect(testConfig.JWT_SECRET).toBe('udyam-pay-dev-super-secret-jwt-key-min-32-chars!');
     });
 
     it('rejects DEV_DEFAULT_WEBHOOK_SECRET in production', () => {

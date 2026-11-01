@@ -1,4 +1,4 @@
-# Udhyam PAY — Aggregator Integration Plan & Architecture Strategy
+# Udyam PAY — Aggregator Integration Plan & Architecture Strategy
 
 **Document Reference**: `docs/integration-readiness/AGGREGATOR_INTEGRATION_PLAN.md`  
 **Date**: November 2026  
@@ -9,17 +9,17 @@
 
 ## 1. Architectural Vision & Decoupling Strategy
 
-The primary objective of Udhyam PAY is to retain complete ownership and control over:
+The primary objective of Udyam PAY is to retain complete ownership and control over:
 1. **Merchant Portal & Onboarding**: KYC, shop hierarchy, sales executive logins, and merchant dashboards.
 2. **Customer Point-of-Sale Experience**: In-store QR code generation, mobile checkout web application, purchase tracking, and multi-offer comparison interface.
 3. **Internal Data Models & State Machine**: Append-only status histories, optimistic locking, idempotent submissions, and audit logging.
 4. **Merchant Commission Accounting**: Double-entry ledger calculating originations, accruals, reversals, and merchant settlements.
 
-To achieve this without being locked into a single aggregator (such as FinBox) or rewriting core business logic when partner capabilities change, Udhyam PAY must introduce a **Unified Provider Abstraction Layer**.
+To achieve this without being locked into a single aggregator (such as FinBox) or rewriting core business logic when partner capabilities change, Udyam PAY must introduce a **Unified Provider Abstraction Layer**.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│                   UDHYAM PAY DOMAIN APPLICATION LAYER                  │
+│                   UDYAM PAY DOMAIN APPLICATION LAYER                  │
 │                                                                        │
 │   ┌───────────────┐   ┌────────────────┐   ┌───────────────────────┐   │
 │   │  Auth & RBAC  │   │  Merchants &   │   │  Checkout & Purchases │   │
@@ -63,7 +63,7 @@ To achieve this without being locked into a single aggregator (such as FinBox) o
 │                                                                        │
 │   ┌───────────────────────────┐   ┌────────────────────────────────┐   │
 │   │ Integer Paise Normalizer  │   │ Canonical Status Mapping       │   │
-│   │ (BigInt Zero-Float Math)  │   │ (Aggregator -> Udhyam Machine) │   │
+│   │ (BigInt Zero-Float Math)  │   │ (Aggregator -> Udyam Machine) │   │
 │   └───────────────────────────┘   └────────────────────────────────┘   │
 │   ┌───────────────────────────┐   ┌────────────────────────────────┐   │
 │   │ Payload Hasher & Redactor │   │ Fail-Closed Security Guard     │   │
@@ -205,9 +205,9 @@ export function toPaise(value: unknown): bigint {
 ```
 
 ### 2. Canonical Status Mapping
-External aggregator statuses are strictly translated into Udhyam PAY state machine statuses:
+External aggregator statuses are strictly translated into Udyam PAY state machine statuses:
 
-| FinBox / Aggregator Status | Udhyam PAY Canonical Status | Transition Context |
+| FinBox / Aggregator Status | Udyam PAY Canonical Status | Transition Context |
 | :--- | :--- | :--- |
 | `INITIATED`, `PROCESSING`, `BUREAU_PULL` | `LENDER_PROCESSING` | `actor: SYSTEM` |
 | `DOCS_REQUIRED`, `KYC_PENDING`, `AA_PENDING` | `ADDITIONAL_INFORMATION_REQUIRED` | `actor: LENDER`, `lenderConfirmed: true` |
@@ -423,7 +423,7 @@ Stage 3: Customer Journey & Webview / SDK Integration (Weeks 5–6)
 ├── Wire Aggregator Embedded Journey URL into Checkout API
 ├── Build mobile checkout redirect handler for KYC and Mandate
 ├── Implement unified Aggregator Webhook receiver
-└── Map aggregator underwriting callbacks to Udhyam state machine
+└── Map aggregator underwriting callbacks to Udyam state machine
 
 Stage 4: Closing, Mandate & Disbursement Reconciliation (Weeks 7–8)
 ├── Implement Mandate and LoanAgreement database models

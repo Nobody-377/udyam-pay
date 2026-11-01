@@ -256,7 +256,7 @@ export class JsonMockLenderAdapter implements LenderAdapter {
             processingFeePaise: emiResult.processingFeePaise,
             totalRepayablePaise: emiResult.totalRepayablePaise,
             termsVersion: 'DEMO-v1.0',
-            termsUrl: `https://demo.udhyam.example/terms/${this.code.toLowerCase()}`,
+            termsUrl: `https://demo.udyam.example/terms/${this.code.toLowerCase()}`,
           };
         });
 

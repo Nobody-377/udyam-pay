@@ -1,14 +1,14 @@
-# Udhyam PAY — Comprehensive Backend Audit Report
+# Udyam PAY — Comprehensive Backend Audit Report
 
 **Date of Audit:** October 31, 2026  
 **Auditor Roles:** Senior Backend Architect, Application Security Engineer, PostgreSQL Specialist, Test Engineer  
-**Workspace:** `c:\Users\NANDINI PATEL\OneDrive\Desktop\udhyam-pay-backend`
+**Workspace:** `c:\Users\NANDINI PATEL\OneDrive\Desktop\udyam-pay-backend`
 
 ---
 
 ## 1. Executive Summary
 
-A comprehensive architectural, security, database, and test audit was conducted on the Udhyam PAY backend codebase. Udhyam PAY is designed as a B2B2C multi-lender EMI financing platform for offline retailers in India, acting as a technology and distribution platform rather than a regulated credit provider.
+A comprehensive architectural, security, database, and test audit was conducted on the Udyam PAY backend codebase. Udyam PAY is designed as a B2B2C multi-lender EMI financing platform for offline retailers in India, acting as a technology and distribution platform rather than a regulated credit provider.
 
 ### The Discrepancy: Reported Status vs. Actual Codebase Reality
 A prior implementation report claimed that a substantial portion of the system—including Argon2id password hashing, JWT authentication via `jose`, refresh-token rotation, RBAC, merchant and customer services, idempotent purchase creation, exact integer EMI calculations, lender adapters, circuit breaker, eligibility screening, offer validation, webhook signature verification, result applier, and a waterfall orchestrator—had already been implemented and that 59 SQL constraint checks had run against PostgreSQL 16.
@@ -19,7 +19,7 @@ A prior implementation report claimed that a substantial portion of the system�
 3. **Missing Database Migrations:** No migration folder exists (`prisma/migrations/`). No database migration has ever been generated or executed. The claimed 59 SQL constraint checks against PostgreSQL 16 never ran in this repository.
 4. **Zero Installed Dependencies:** Neither `node_modules` nor a lockfile (`package-lock.json` or `pnpm-lock.yaml`) exists. No npm package has been installed.
 5. **Zero Executed Tests:** The Vitest and Supertest test suites exist only as written source code (`SOURCE_ONLY`). They have never been executed by a test runner because neither `vitest` nor its dependencies are installed.
-6. **Accidental Duplicate Directory:** An exact mirror of the root project was inadvertently unzipped or copied into a nested directory: `./udhyam-pay-backend/`.
+6. **Accidental Duplicate Directory:** An exact mirror of the root project was inadvertently unzipped or copied into a nested directory: `./udyam-pay-backend/`.
 
 ### What Is Genuinely Implemented
 The repository contains a well-structured foundational skeleton (Phase 1 & Phase 2 domain model):
@@ -37,7 +37,7 @@ The repository contains a well-structured foundational skeleton (Phase 1 & Phase
 ### Physical File Inventory
 
 ```
-udhyam-pay-backend/
+udyam-pay-backend/
 ├── .dockerignore
 ├── .env.example
 ├── .gitignore
@@ -93,22 +93,22 @@ udhyam-pay-backend/
 │       ├── common.test.ts
 │       ├── env.test.ts
 │       └── logger.test.ts
-└── udhyam-pay-backend/             [DEFECT: Redundant identical nested clone]
+└── udyam-pay-backend/             [DEFECT: Redundant identical nested clone]
 ```
 
 ### Component Status Inventory
 
 | Layer / Component | Claimed Status | Actual Implementation Status | Evidence / File Path |
 | :--- | :--- | :--- | :--- |
-| **Express Skeleton** | Implemented | **Genuinely Implemented** (Module 1) | [`src/app.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/app.ts) |
-| **Environment Validation** | Implemented | **Genuinely Implemented** (Module 1) | [`src/config/env.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/config/env.ts) |
-| **Redacted Logging** | Implemented | **Genuinely Implemented** (Module 1) | [`src/config/logger.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/config/logger.ts) |
-| **Central Error Envelope** | Implemented | **Genuinely Implemented** (Module 1) | [`src/common/middleware/error-handler.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/common/middleware/error-handler.ts) |
-| **Health / Ready Endpoints** | Implemented | **Genuinely Implemented** (Module 1) | [`src/modules/health/health.routes.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/modules/health/health.routes.ts) |
-| **Prisma Schema** | Implemented | **Genuinely Implemented** (Draft) | [`prisma/schema.prisma`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/prisma/schema.prisma) |
-| **SQL Custom Constraints** | Implemented | **Source Only** (Unverified against DB) | [`prisma/sql/001_constraints.sql`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/prisma/sql/001_constraints.sql) |
+| **Express Skeleton** | Implemented | **Genuinely Implemented** (Module 1) | [`src/app.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/app.ts) |
+| **Environment Validation** | Implemented | **Genuinely Implemented** (Module 1) | [`src/config/env.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/config/env.ts) |
+| **Redacted Logging** | Implemented | **Genuinely Implemented** (Module 1) | [`src/config/logger.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/config/logger.ts) |
+| **Central Error Envelope** | Implemented | **Genuinely Implemented** (Module 1) | [`src/common/middleware/error-handler.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/common/middleware/error-handler.ts) |
+| **Health / Ready Endpoints** | Implemented | **Genuinely Implemented** (Module 1) | [`src/modules/health/health.routes.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/modules/health/health.routes.ts) |
+| **Prisma Schema** | Implemented | **Genuinely Implemented** (Draft) | [`prisma/schema.prisma`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/prisma/schema.prisma) |
+| **SQL Custom Constraints** | Implemented | **Source Only** (Unverified against DB) | [`prisma/sql/001_constraints.sql`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/prisma/sql/001_constraints.sql) |
 | **Initial Migration** | Verified on PG16 | **MISSING** (No migration folder) | Does not exist |
-| **Application State Machine** | Implemented | **Genuinely Implemented** | [`src/modules/applications/application-state-machine.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/src/modules/applications/application-state-machine.ts) |
+| **Application State Machine** | Implemented | **Genuinely Implemented** | [`src/modules/applications/application-state-machine.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/src/modules/applications/application-state-machine.ts) |
 | **Store Interfaces & In-Memory**| Implemented | **MISSING** | Does not exist |
 | **Auth / Argon2id / JWT / RBAC** | Implemented | **MISSING** | Does not exist |
 | **Merchants & Shops Service** | Implemented | **MISSING** | Does not exist |
@@ -189,7 +189,7 @@ The schema defines 17 Enums and 15 Models:
 - **Remediation:** Specify `NULLS NOT DISTINCT` in PostgreSQL 15+ or enforce non-null references upon confirmation.
 
 #### 6. [P2 - MEDIUM] Append-Only Trigger Bypass via `TRUNCATE`
-- **Finding:** The `udhyam_forbid_mutation()` trigger function blocks `UPDATE` and `DELETE`, but does not block `TRUNCATE`.
+- **Finding:** The `udyam_forbid_mutation()` trigger function blocks `UPDATE` and `DELETE`, but does not block `TRUNCATE`.
 - **Risk:** Any role with table truncate permissions could wipe financial history, audit logs, or commission ledgers.
 - **Remediation:** Explicitly add a `BEFORE TRUNCATE` trigger or revoke `TRUNCATE` privileges from the application database role.
 
@@ -250,11 +250,11 @@ Every test file in the repository was inspected. In accordance with the defined 
 
 | Test File | Target Module | Stated Claim | Actual Evidence Level | Assessment & Findings |
 | :--- | :--- | :--- | :--- | :--- |
-| [`tests/unit/application-state-machine.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/tests/unit/application-state-machine.test.ts) | Application State Machine | Passing | **SOURCE_ONLY** | 14 test cases written. Pure logic is sound. Reads `schema.prisma` via regex to assert enum parity. |
-| [`tests/unit/common.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/tests/unit/common.test.ts) | Errors, pagination, async | Passing | **SOURCE_ONLY** | Tests `AppError`, pagination coercion, and `withTimeout`. |
-| [`tests/unit/env.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/tests/unit/env.test.ts) | Environment parsing | Passing | **SOURCE_ONLY** | Tests defaults, URL validation, and credential redaction in error messages. |
-| [`tests/unit/logger.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/tests/unit/logger.test.ts) | Logger redaction | Passing | **SOURCE_ONLY** | Tests redaction paths and pino stream output. |
-| [`tests/integration/app.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/tests/integration/app.test.ts) | Express app, CORS, rate-limit | Passing | **SOURCE_ONLY** | 12 Supertest tests written. Unexecuted because `supertest` is not installed. |
+| [`tests/unit/application-state-machine.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/tests/unit/application-state-machine.test.ts) | Application State Machine | Passing | **SOURCE_ONLY** | 14 test cases written. Pure logic is sound. Reads `schema.prisma` via regex to assert enum parity. |
+| [`tests/unit/common.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/tests/unit/common.test.ts) | Errors, pagination, async | Passing | **SOURCE_ONLY** | Tests `AppError`, pagination coercion, and `withTimeout`. |
+| [`tests/unit/env.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/tests/unit/env.test.ts) | Environment parsing | Passing | **SOURCE_ONLY** | Tests defaults, URL validation, and credential redaction in error messages. |
+| [`tests/unit/logger.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/tests/unit/logger.test.ts) | Logger redaction | Passing | **SOURCE_ONLY** | Tests redaction paths and pino stream output. |
+| [`tests/integration/app.test.ts`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/tests/integration/app.test.ts) | Express app, CORS, rate-limit | Passing | **SOURCE_ONLY** | 12 Supertest tests written. Unexecuted because `supertest` is not installed. |
 
 ### Missing Test Suites
 The previous report claimed unit and integration tests existed for:
@@ -279,7 +279,7 @@ The previous report claimed unit and integration tests existed for:
 | **DEF-06** | **P1** | **Build & TS** | Missing `"type": "module"` in `package.json`, while relative imports omit `.js` extensions under `NodeNext`. | Node ESM runtime fails with `ERR_MODULE_NOT_FOUND` unless bundled. |
 | **DEF-07** | **P1** | **Docker** | `Dockerfile` executes `COPY package.json package-lock.json ./` and `npm ci`. | Docker build will fail immediately because `package-lock.json` does not exist. |
 | **DEF-08** | **P1** | **Config** | `src/config/env.ts` missing JWT secrets, token expiries, and webhook secrets. | Secret configuration cannot be validated at startup. |
-| **DEF-09** | **P2** | **Repository** | Duplicate directory `./udhyam-pay-backend/udhyam-pay-backend` contains a redundant mirror. | Confuses developers, wastes disk space, and risks divergent edits. |
+| **DEF-09** | **P2** | **Repository** | Duplicate directory `./udyam-pay-backend/udyam-pay-backend` contains a redundant mirror. | Confuses developers, wastes disk space, and risks divergent edits. |
 | **DEF-10** | **P2** | **Routes** | `src/routes/index.ts` mounts no feature routes; `/api/v1` is effectively empty. | No business endpoints are exposed. |
 
 ---

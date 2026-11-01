@@ -1,16 +1,16 @@
-# Udhyam PAY — External Integration Readiness Executive Summary
+# Udyam PAY — External Integration Readiness Executive Summary
 
 **Document Reference**: `docs/integration-readiness/INTEGRATION_READINESS_SUMMARY.md`  
 **Date**: November 2026  
 **Auditor**: Senior Backend Architect, Application Security Engineer & Systems Auditor  
-**Repository**: Udhyam PAY Backend  
+**Repository**: Udyam PAY Backend  
 **Audit Purpose**: Independent External Integration Readiness Assessment for Lending Aggregator Connectivity (FinBox)  
 
 ---
 
 ## 1. Executive Summary & Verdict
 
-Udhyam PAY's backend codebase was subjected to an independent, evidence-based architectural audit to evaluate its readiness for connecting with an external digital lending aggregator (such as FinBox).
+Udyam PAY's backend codebase was subjected to an independent, evidence-based architectural audit to evaluate its readiness for connecting with an external digital lending aggregator (such as FinBox).
 
 ### Strategic Architecture Verdict: **FOUNDATION READY — EXTERNAL ADAPTER PENDING**
 
@@ -29,7 +29,7 @@ Udhyam PAY's backend codebase was subjected to an independent, evidence-based ar
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                    UDHYAM PAY SUBSYSTEM READINESS DASHBOARD                  │
+│                    UDYAM PAY SUBSYSTEM READINESS DASHBOARD                  │
 ├──────────────────────────────┬─────────────┬─────────────────────────────────┤
 │ Subsystem                    │ Status      │ Technical Evidence / Notes      │
 ├──────────────────────────────┼─────────────┼─────────────────────────────────┤
@@ -73,8 +73,8 @@ Udhyam PAY's backend codebase was subjected to an independent, evidence-based ar
 
 ### D. What is Blocked by External Access
 - **Aggregator Sandbox Connectivity**: Awaiting vendor API documentation, sandbox base URLs, and test credentials.
-- **Regulatory Tripartite Agreement**: Execution of the mandatory Lending Service Provider (LSP) agreement between Udhyam PAY, the Aggregator, and partner Regulated Entities (REs).
-- **Lender Coverage Confirmation**: Finalization of the list of live Banks/NBFCs offering 0% subvented consumer durable loans in Udhyam's target retail categories.
+- **Regulatory Tripartite Agreement**: Execution of the mandatory Lending Service Provider (LSP) agreement between Udyam PAY, the Aggregator, and partner Regulated Entities (REs).
+- **Lender Coverage Confirmation**: Finalization of the list of live Banks/NBFCs offering 0% subvented consumer durable loans in Udyam's target retail categories.
 
 ---
 
@@ -85,9 +85,9 @@ Tasks are prioritized from **P0** (critical blockers for sandbox/compliance) to 
 | Task Description | Priority | Existing Codebase Status | External Dependency | Relative Complexity | Acceptance Criteria |
 | :--- | :---: | :--- | :--- | :---: | :--- |
 | **Refactor Provider Interface Contract** | **P0** | Partially exists (`LenderAdapter`) | None (Internal) | **Medium** | Define `ILendingProvider` contract supporting multi-offer proposals, webview URLs, and status polling. 100% test pass. |
-| **Implement Aggregator Webhook Receiver** | **P0** | Lender-specific routes exist | Aggregator Webhook Spec & HMAC Secret | **Medium** | Single endpoint `POST /api/v1/webhooks/aggregator` verifying signature and mapping events to Udhyam state machine. |
+| **Implement Aggregator Webhook Receiver** | **P0** | Lender-specific routes exist | Aggregator Webhook Spec & HMAC Secret | **Medium** | Single endpoint `POST /api/v1/webhooks/aggregator` verifying signature and mapping events to Udyam state machine. |
 | **Implement FinBox / Aggregator Sandbox Client** | **P0** | Missing (Mock only) | Aggregator Sandbox Credentials | **High** | Type-safe HTTP client executing eligibility check, application submission, and offer fetch against live sandbox API. |
-| **Wire Embedded Journey / Webview Redirect** | **P0** | QR tokens exist; customer redirect missing | Aggregator Webview SDK URL | **Low** | Mobile checkout redirects customer to aggregator webview for KYC/Mandate and returns to Udhyam on completion. |
+| **Wire Embedded Journey / Webview Redirect** | **P0** | QR tokens exist; customer redirect missing | Aggregator Webview SDK URL | **Low** | Mobile checkout redirects customer to aggregator webview for KYC/Mandate and returns to Udyam on completion. |
 | **Add Mandate Tracking Schema** | **P1** | Missing | Partner NBFC Mandate Specification | **Medium** | Add `mandates` table to Prisma schema without breaking migrations; track mandate status and UMRN. |
 | **Add Loan Agreement & KFS Tracking Schema** | **P1** | Missing (`termsUrl` string only) | Aggregator e-Sign / KFS Payload | **Medium** | Add `loan_agreements` table to Prisma schema; store KFS version, unsigned hash, and e-Signed audit hash. |
 | **Connect SMS / WhatsApp Notification Gateway** | **P1** | Missing | Twilio / Gupshup API Key & DLT Approval | **Medium** | Send transactional SMS with checkout link upon QR session creation; sub-5s delivery in India. |
@@ -111,7 +111,7 @@ Tasks are prioritized from **P0** (critical blockers for sandbox/compliance) to 
                           [Embedded Webview]     [Headless API]
                                    │                 │
               ┌────────────────────┴───┐         ┌───┴────────────────────┐
-              │ Customer completes PAN,│         │ Udhyam must build PAN, │
+              │ Customer completes PAN,│         │ Udyam must build PAN, │
               │ KYC, and Mandate inside│         │ DigiLocker, and Penny  │
               │ Aggregator Webview.    │         │ Drop screens. Requires │
               │ ZERO PII stored in DB. │         │ encrypted PII vault.   │
@@ -139,14 +139,14 @@ Tasks are prioritized from **P0** (critical blockers for sandbox/compliance) to 
 
 All five detailed audit deliverables have been generated in `docs/integration-readiness/`:
 
-1. [`CURRENT_INTEGRATION_AUDIT.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/docs/integration-readiness/CURRENT_INTEGRATION_AUDIT.md):  
+1. [`CURRENT_INTEGRATION_AUDIT.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/docs/integration-readiness/CURRENT_INTEGRATION_AUDIT.md):  
    Comprehensive architecture breakdown, module implementation inventory, mock vs. real integration status table, code references, and test execution evidence.
-2. [`API_ACCESS_AND_INTEGRATION_REQUIREMENTS.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/docs/integration-readiness/API_ACCESS_AND_INTEGRATION_REQUIREMENTS.md):  
+2. [`API_ACCESS_AND_INTEGRATION_REQUIREMENTS.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/docs/integration-readiness/API_ACCESS_AND_INTEGRATION_REQUIREMENTS.md):  
    20-category external service evaluation, phased implementation breakdown (Phases A–D), bundling analysis, and vendor capability checklist.
-3. [`AGGREGATOR_INTEGRATION_PLAN.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/docs/integration-readiness/AGGREGATOR_INTEGRATION_PLAN.md):  
+3. [`AGGREGATOR_INTEGRATION_PLAN.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/docs/integration-readiness/AGGREGATOR_INTEGRATION_PLAN.md):  
    Decoupled architecture design, `ILendingProvider` TypeScript interfaces, response normalization rules, fail-closed security guards, non-destructive schema migration plan, failure testing matrix, and 5-stage implementation roadmap.
-4. [`AGGREGATOR_QUESTIONS_FOR_VENDOR.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/docs/integration-readiness/AGGREGATOR_QUESTIONS_FOR_VENDOR.md):  
+4. [`AGGREGATOR_QUESTIONS_FOR_VENDOR.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/docs/integration-readiness/AGGREGATOR_QUESTIONS_FOR_VENDOR.md):  
    Vendor-ready checklist of 45+ questions across 9 sections with status tracking (`[ ]`, `[?]`, `[!]`), formatted for immediate distribution to FinBox or prospective aggregators.
-5. [`INTEGRATION_READINESS_SUMMARY.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udhyam-pay-backend/docs/integration-readiness/INTEGRATION_READINESS_SUMMARY.md):  
+5. [`INTEGRATION_READINESS_SUMMARY.md`](file:///c:/Users/NANDINI%20PATEL/OneDrive/Desktop/udyam-pay-backend/docs/integration-readiness/INTEGRATION_READINESS_SUMMARY.md):  
    Executive scorecard, readiness dashboard, gap analysis, and prioritized task/complexity matrix.
 

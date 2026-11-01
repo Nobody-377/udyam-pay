@@ -1,4 +1,4 @@
-// Udhyam PAY database schema.
+// Udyam PAY database schema.
 // STATUS: written, not validated (prisma CLI was unavailable in the authoring workspace).
 //
 // Conventions
@@ -162,7 +162,7 @@ enum WebhookProcessingStatus {
   IGNORED_OUT_OF_ORDER
 }
 
-// Purchase payments, loan disbursements, merchant settlements and Udhyam PAY commission
+// Purchase payments, loan disbursements, merchant settlements and Udyam PAY commission
 // accounting are kept separate.
 enum TransactionType {
   PURCHASE_PAYMENT

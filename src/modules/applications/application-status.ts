@@ -1,5 +1,5 @@
 /**
- * Internal financing-application lifecycle. This is Udhyam PAY's own workflow,
+ * Internal financing-application lifecycle. This is Udyam PAY's own workflow,
  * not a claim that every lender uses identical states. The values must stay in
  * sync with the Prisma enum `ApplicationStatus` (a unit test enforces this).
  */

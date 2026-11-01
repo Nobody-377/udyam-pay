@@ -1,7 +1,7 @@
-# Udhyam PAY Backend
+# Udyam PAY Backend
 
-Backend for **Udhyam PAY**, a B2B2C multi-lender EMI financing platform for offline retailers in India.
-Udhyam PAY is a technology and financing-distribution platform, **not a lender**: credit decisions,
+Backend for **Udyam PAY**, a B2B2C multi-lender EMI financing platform for offline retailers in India.
+Udyam PAY is a technology and financing-distribution platform, **not a lender**: credit decisions,
 loan agreements, and disbursements remain exclusively with authorized lending partners (Banks & NBFCs).
 
 ---
@@ -175,7 +175,7 @@ cat prisma/sql/001_constraints.sql | psql $DATABASE_URL
 # 6. Seed initial mock lenders and system administrator
 npm run prisma:seed
 # Or create an admin user manually:
-# npx tsx scripts/create-admin.ts admin@udhyampay.com StrongAdminPass123!
+# npx tsx scripts/create-admin.ts admin@udyampay.com StrongAdminPass123!
 
 # 7. Start the development server
 npm run dev
@@ -192,7 +192,7 @@ Once running, interactive OpenAPI documentation is available at:
 ## Project Structure
 
 ```
-udhyam-pay-backend/
+udyam-pay-backend/
 ├── prisma/
 │   ├── schema.prisma               # Prisma domain models, enums & relations
 │   ├── seed.ts                     # Database seed script for mock lenders & admin

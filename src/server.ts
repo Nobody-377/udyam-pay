@@ -69,7 +69,7 @@ function main(): void {
   });
 
   const server = app.listen(config.PORT, () => {
-    logger.info({ port: config.PORT }, 'Udhyam PAY backend listening');
+    logger.info({ port: config.PORT }, 'Udyam PAY backend listening');
   });
 
   let shuttingDown = false;

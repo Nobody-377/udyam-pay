@@ -1,4 +1,4 @@
-# Udhyam PAY — Demo Deployment Guide
+# Udyam PAY — Demo Deployment Guide
 
 **Document Reference**: `docs/integration-readiness/DEMO_DEPLOYMENT_GUIDE.md`  
 **Target Environment**: Demo / Staging / Investor Presentation Environment  
@@ -9,7 +9,7 @@
 
 ## 1. Overview & Architecture Boundary
 
-This guide provides instructions for deploying Udhyam PAY in a controlled, isolated **Demo Mode**. 
+This guide provides instructions for deploying Udyam PAY in a controlled, isolated **Demo Mode**. 
 
 In Demo Mode:
 - **Simulated Lenders**: Three mock lenders (`[DEMO] Alpha Digital Bank`, `[DEMO] Beta Retail Finance NBFC`, `[DEMO] Gamma Consumer Credit`) provide realistic credit evaluation, waterfall routing, and offer generation without connecting to external banking APIs.
@@ -38,7 +38,7 @@ Create a dedicated environment file (e.g. `.env.demo`) for your demo instance.
 
 ```bash
 # ==============================================================================
-# UDHYAM PAY — DEMO ENVIRONMENT CONFIGURATION (.env)
+# UDYAM PAY — DEMO ENVIRONMENT CONFIGURATION (.env)
 # ==============================================================================
 
 # --- Node & Provider Mode ----------------------------------------------------
@@ -64,8 +64,8 @@ TRUST_PROXY=0
 # --- Browser CORS Hardening --------------------------------------------------
 # Comma-separated list of EXACT allowed frontend origins.
 # NO wildcards (*), NO paths, and NO trailing slashes are permitted.
-# Example: https://demo.udhyam.example,http://localhost:5173
-CORS_ALLOWED_ORIGINS=https://demo.udhyam.example,http://localhost:5173
+# Example: https://demo.udyam.example,http://localhost:5173
+CORS_ALLOWED_ORIGINS=https://demo.udyam.example,http://localhost:5173
 
 # Request payload ceiling and global rate limits
 REQUEST_BODY_LIMIT=100kb
@@ -90,7 +90,7 @@ LENDER_BETA_WEBHOOK_SECRET=demo-beta-secret-key-32chars-min!
 
 # --- PostgreSQL Connection ---------------------------------------------------
 # PostgreSQL connection string with public schema. URL-encode special characters.
-DATABASE_URL=postgresql://demo_user:demo_password@postgres-host:5432/udhyam_demo?schema=public
+DATABASE_URL=postgresql://demo_user:demo_password@postgres-host:5432/udyam_demo?schema=public
 ```
 
 ---
@@ -129,7 +129,7 @@ npm run seed:demo
    - Merchant: `Apex Digital Retail Private Limited` (`Apex Electronics`)
    - Merchant Owner Login: `owner@apex.example` / `ApexOwner2026!`
    - Flagship Shop: `Apex Flagship Store Indiranagar` (Bengaluru, Karnataka)
-   - System Admin: `admin@udhyam.example` / `AdminPassword123!`
+   - System Admin: `admin@udyam.example` / `AdminPassword123!`
 5. **Preserves Immutability & Financial Records**: Uses safe `upsert` queries; never drops, truncates, or modifies existing transactions, applications, or commission ledger entries. Rerunning `npm run seed:demo` is 100% idempotent.
 
 ---
@@ -184,9 +184,9 @@ app.use(
 
 ### CORS Configuration Rules
 1. **Exact Matches Only**:
-   - Valid: `https://demo.udhyam.example,http://localhost:5173`
-   - Invalid: `https://demo.udhyam.example/` (trailing slash rejected by Zod schema)
-   - Invalid: `*.udhyam.example` (wildcard subdomains rejected by Zod schema)
+   - Valid: `https://demo.udyam.example,http://localhost:5173`
+   - Invalid: `https://demo.udyam.example/` (trailing slash rejected by Zod schema)
+   - Invalid: `*.udyam.example` (wildcard subdomains rejected by Zod schema)
    - Invalid: `*` (universal wildcard rejected by Zod schema)
 2. **Credentials**: `credentials: false` is enforced. Authentication relies on standard `Authorization: Bearer <token>` headers, not ambient browser cookies.
 3. **Preflight Caching**: HTTP `OPTIONS` preflight responses are cached for 600 seconds (`maxAge: 600`).
@@ -248,7 +248,7 @@ To prevent accidental mock data contamination or security breaches:
      ```
 2. **Database Isolation**:
    - Never share database instances or schemas between demo and production.
-   - Demo databases should be prefixed or isolated (e.g. `udhyam_demo`).
+   - Demo databases should be prefixed or isolated (e.g. `udyam_demo`).
    - The demo seed script explicitly refuses to run when `NODE_ENV=production` unless `ALLOW_DEMO_SEED=true` is passed.
 3. **No Real Credential Exposure**:
    - Demo environments must never contain real aggregator credentials, payment gateway keys, or live SMS/email OTP gateway secrets.

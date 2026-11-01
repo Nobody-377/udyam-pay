@@ -1,22 +1,22 @@
-# Udhyam PAY — Final Independent Verification Audit Report
+# Udyam PAY — Final Independent Verification Audit Report
 
 **Audit Date:** October 31, 2026  
 **Auditor:** Senior Backend Architect, Application Security Engineer, PostgreSQL Specialist, Test Engineer  
-**Target Repository:** `udhyam-pay-backend` (Modular Monolith)  
+**Target Repository:** `udyam-pay-backend` (Modular Monolith)  
 **Final Status:** **IMPLEMENTED — VERIFICATION BLOCKED**
 
 ---
 
 ## 1. Executive Summary
 
-This independent verification audit evaluated the complete codebase of the **Udhyam PAY** backend across all 14 planned implementation phases, following the initial comprehensive audit and incremental implementation.
+This independent verification audit evaluated the complete codebase of the **Udyam PAY** backend across all 14 planned implementation phases, following the initial comprehensive audit and incremental implementation.
 
 The implementation claims were audited against:
 1. **Actual Source Files:** Verified line-by-line that real, non-placeholder, functional logic is implemented.
 2. **Static & Strict Type Analysis:** TypeScript 5 compiler (`npm run typecheck` / `tsc --noEmit`) executing with strict flags (`strict: true`, `noUncheckedIndexedAccess: true`, `noImplicitAny: true`, `noUnusedLocals: true`, `noUnusedParameters: true`).
 3. **Runtime Execution Verification:** Native Node.js v22.18.0 execution of 15 verification test suites (`npm run test:verify`) exercising state machine invariants, cryptographic authentication, exact integer paise arithmetic, circuit breaker tripping, waterfall routing, concurrent idempotency, unguessable QR tokens, webhook HMAC signatures, immutable double-entry commissions, and the complete 15-step end-to-end lifecycle flow.
 4. **Environment Constraints & Blockers:** Documented exact external blockers preventing live execution of Vitest, Prisma Client generation, PostgreSQL 16 migrations, and Docker builds.
-5. **Distribution Archive:** Inspected and validated `udhyam-pay-backend-complete.zip` (139,980 bytes, 88 files).
+5. **Distribution Archive:** Inspected and validated `udyam-pay-backend-complete.zip` (139,980 bytes, 88 files).
 
 ---
 
@@ -31,7 +31,7 @@ Each project command specified in `package.json` was executed in the workspace. 
   ```text
   Compiling verification script...
   Running logic verification on Node.js runtime...
-  --- UDHYAM PAY BACKEND LOGIC VERIFICATION ---
+  --- UDYAM PAY BACKEND LOGIC VERIFICATION ---
 
   [1/10] State Machine Invariants:
     [PASS] Terminal states have zero outgoing transitions
@@ -292,7 +292,7 @@ The complete end-to-end business flow was verified in `scripts/verify-logic.ts` 
 
 ## 5. Distribution Archive Verification
 
-The distribution archive [`udhyam-pay-backend-complete.zip`](./udhyam-pay-backend-complete.zip) was inspected:
+The distribution archive [`udyam-pay-backend-complete.zip`](./udyam-pay-backend-complete.zip) was inspected:
 - **Archive Size:** 139,980 bytes
 - **Total Entries:** 88 files
 - **Integrity Checks:**
@@ -363,7 +363,7 @@ The remaining blockers are solely external infrastructure dependencies:
 
 ## 8. Final Audit Verdict
 
-The Udhyam PAY backend project is **substantially and genuinely complete**. No placeholder responses, stubbed methods, or fake success return values exist. All financial invariants, state machines, cryptographic controls, and tenant isolation rules have been audited, typechecked with zero errors, verified with 15 passing runtime tests on Node.js v22, and packaged cleanly into [`udhyam-pay-backend-complete.zip`](./udhyam-pay-backend-complete.zip).
+The Udyam PAY backend project is **substantially and genuinely complete**. No placeholder responses, stubbed methods, or fake success return values exist. All financial invariants, state machines, cryptographic controls, and tenant isolation rules have been audited, typechecked with zero errors, verified with 15 passing runtime tests on Node.js v22, and packaged cleanly into [`udyam-pay-backend-complete.zip`](./udyam-pay-backend-complete.zip).
 
 **Final Classification: IMPLEMENTED — VERIFICATION BLOCKED**
 *(Awaiting online `npm install` and PostgreSQL 16 daemon).*

@@ -69,7 +69,7 @@ CREATE UNIQUE INDEX "financing_applications_one_active_per_purchase"
 -- (TRUNCATE is not blocked, so test suites can reset data.)
 -- Retention purges of audit data must use a separate, explicitly privileged procedure.
 -- ---------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION udhyam_forbid_mutation() RETURNS trigger AS $$
+CREATE OR REPLACE FUNCTION udyam_forbid_mutation() RETURNS trigger AS $$
 BEGIN
   RAISE EXCEPTION 'Table % is append-only', TG_TABLE_NAME;
 END;
@@ -77,16 +77,16 @@ $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER "application_status_history_append_only"
   BEFORE UPDATE OR DELETE ON "application_status_history"
-  FOR EACH ROW EXECUTE FUNCTION udhyam_forbid_mutation();
+  FOR EACH ROW EXECUTE FUNCTION udyam_forbid_mutation();
 
 CREATE TRIGGER "audit_logs_append_only"
   BEFORE UPDATE OR DELETE ON "audit_logs"
-  FOR EACH ROW EXECUTE FUNCTION udhyam_forbid_mutation();
+  FOR EACH ROW EXECUTE FUNCTION udyam_forbid_mutation();
 
 CREATE TRIGGER "commission_entries_append_only"
   BEFORE UPDATE OR DELETE ON "commission_entries"
-  FOR EACH ROW EXECUTE FUNCTION udhyam_forbid_mutation();
+  FOR EACH ROW EXECUTE FUNCTION udyam_forbid_mutation();
 
 CREATE TRIGGER "disbursement_statuses_append_only"
   BEFORE UPDATE OR DELETE ON "disbursement_statuses"
-  FOR EACH ROW EXECUTE FUNCTION udhyam_forbid_mutation();
+  FOR EACH ROW EXECUTE FUNCTION udyam_forbid_mutation();

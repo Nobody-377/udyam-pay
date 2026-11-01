@@ -77,7 +77,7 @@ export function createApp(deps: AppDependencies): Express {
       const spec = JSON.parse(readFileSync(resolve(process.cwd(), 'src/docs/openapi.json'), 'utf8'));
       res.status(200).json(spec);
     } catch {
-      res.status(200).json({ openapi: '3.1.0', info: { title: 'Udhyam PAY' } });
+      res.status(200).json({ openapi: '3.1.0', info: { title: 'Udyam PAY' } });
     }
   });
   app.get('/api/docs', async (_req: any, res: any) => {
@@ -87,7 +87,7 @@ export function createApp(deps: AppDependencies): Express {
       const spec = JSON.parse(readFileSync(resolve(process.cwd(), 'src/docs/openapi.json'), 'utf8'));
       res.status(200).json(spec);
     } catch {
-      res.status(200).json({ openapi: '3.1.0', info: { title: 'Udhyam PAY' } });
+      res.status(200).json({ openapi: '3.1.0', info: { title: 'Udyam PAY' } });
     }
   });
 

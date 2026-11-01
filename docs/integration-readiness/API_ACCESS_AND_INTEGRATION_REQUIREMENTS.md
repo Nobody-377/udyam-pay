@@ -1,4 +1,4 @@
-# Udhyam PAY — External API Access & Integration Requirements
+# Udyam PAY — External API Access & Integration Requirements
 
 **Document Reference**: `docs/integration-readiness/API_ACCESS_AND_INTEGRATION_REQUIREMENTS.md`  
 **Date**: November 2026  
@@ -9,9 +9,9 @@
 
 ## 1. Executive Summary
 
-Udhyam PAY provides an in-store checkout financing experience where customers scan a QR code at merchant locations, configure loan terms for consumer durables, and receive instantaneous multi-lender offers.
+Udyam PAY provides an in-store checkout financing experience where customers scan a QR code at merchant locations, configure loan terms for consumer durables, and receive instantaneous multi-lender offers.
 
-To operate legally and securely within the Reserve Bank of India (RBI) Digital Lending Guidelines (DLG) and the Digital Personal Data Protection (DPDP) Act 2023, Udhyam PAY must integrate with external financial infrastructure. Rather than establishing individual direct integrations with 15+ Banks and NBFCs, Udhyam PAY plans to integrate with an external lending aggregator (such as FinBox).
+To operate legally and securely within the Reserve Bank of India (RBI) Digital Lending Guidelines (DLG) and the Digital Personal Data Protection (DPDP) Act 2023, Udyam PAY must integrate with external financial infrastructure. Rather than establishing individual direct integrations with 15+ Banks and NBFCs, Udyam PAY plans to integrate with an external lending aggregator (such as FinBox).
 
 This document evaluates all 20 external service categories, defines the data exchange contracts, categorizes requirements across implementation phases (Phases A through D), and provides a comprehensive vendor readiness checklist.
 
@@ -36,7 +36,7 @@ Each external service is evaluated against the 11 dimensions required for techni
   - *Inbound*: Aggregator tracking ID, list of eligible partner lenders, routing disposition.
 - **Sync / Async**: **Hybrid** (Initial handshake synchronous; underwriting asynchronous).
 - **Security & Auth**: Server-to-server TLS 1.3, API Key + Client Secret, HMAC-SHA256 request signatures, IP whitelisting.
-- **Compliance & Contracts**: Tripartite agreement between Udhyam PAY (LSP), Aggregator (Tech Provider / LSP), and Regulated Entities (REs / NBFCs).
+- **Compliance & Contracts**: Tripartite agreement between Udyam PAY (LSP), Aggregator (Tech Provider / LSP), and Regulated Entities (REs / NBFCs).
 - **Mock Feasibility**: **YES**. Fully mockable via deterministic scenarios.
 - **Production-Ready Evidence**: Successful sandbox handshake, verified mTLS connectivity, active partner lender routing in production.
 
@@ -51,7 +51,7 @@ Each external service is evaluated against the 11 dimensions required for techni
   - `POST /v1/applications`: Initialize loan origination session.
   - `POST /v1/applications/{id}/submit`: Transmit finalized underwriting packet.
 - **Data Exchange**:
-  - *Outbound*: Unique Udhyam application UUID, requested principal (paise), tenure, purchase metadata, customer mobile, consent timestamp.
+  - *Outbound*: Unique Udyam application UUID, requested principal (paise), tenure, purchase metadata, customer mobile, consent timestamp.
   - *Inbound*: Aggregator loan reference ID, initial triage status (`PENDING`, `REJECTED`, `PROCESSING`).
 - **Sync / Async**: **Asynchronous**. Response returns HTTP 202 Accepted with polling URL or webhook registration.
 - **Security & Auth**: Bearer JWT / API Key, request-level idempotency key (`Idempotency-Key` header).
@@ -81,7 +81,7 @@ Each external service is evaluated against the 11 dimensions required for techni
 ---
 
 ### Category 4: Multi-Offer Retrieval & Offer Comparison
-- **Required for Workflow**: **YES** (Core differentiator of Udhyam PAY).
+- **Required for Workflow**: **YES** (Core differentiator of Udyam PAY).
 - **Existing Repository Status**: **Implemented & Tested** internally (`OfferService`, `FinancingOffer` model); populated with simulated offers.
 - **Provided by Aggregator**: **YES**.
 - **Separate Provider Required**: **NO**.
@@ -101,7 +101,7 @@ Each external service is evaluated against the 11 dimensions required for techni
 ### Category 5: Lender Routing & Offer Selection
 - **Required for Workflow**: **YES**.
 - **Existing Repository Status**: **Implemented & Tested** (`WaterfallOrchestrator`, `OfferService.acceptOffer`).
-- **Provided by Aggregator**: **Hybrid**. Aggregators support lender routing, but Udhyam PAY retains customer-facing selection and waterfall preference.
+- **Provided by Aggregator**: **Hybrid**. Aggregators support lender routing, but Udyam PAY retains customer-facing selection and waterfall preference.
 - **Separate Provider Required**: **NO**.
 - **Specific API Operations**:
   - `POST /v1/applications/{id}/offers/{offerId}/select`: Lock chosen lender offer.
@@ -147,7 +147,7 @@ Each external service is evaluated against the 11 dimensions required for techni
   - *Outbound*: Customer phone, application ID, redirect callback URL.
   - *Inbound*: Verification status (`VERIFIED`, `FAILED`), verified name, masked Aadhaar (`XXXX-XXXX-1234`), CKYC identifier, verification timestamp.
 - **Sync / Async**: **Asynchronous** (Customer completes verification in hosted view).
-- **Security & Auth**: Tokenized references only; zero raw Aadhaar or XML storage on Udhyam PAY database.
+- **Security & Auth**: Tokenized references only; zero raw Aadhaar or XML storage on Udyam PAY database.
 - **Compliance & Contracts**: UIDAI / DigiLocker guidelines; Section 6A of Aadhaar Act.
 - **Mock Feasibility**: **YES**. Mock SDK returning simulated `VERIFIED` callback.
 - **Production-Ready Evidence**: Tokenized KYC verification recognized and accepted by partner NBFCs.
@@ -284,7 +284,7 @@ Each external service is evaluated against the 11 dimensions required for techni
 ---
 
 ### Category 15: Repayment Schedules & Post-Disbursement Loan Status
-- **Required for Workflow**: **CONDITIONAL / FUTURE** (Udhyam PAY's core revenue is origination commission; repayments are managed by the lender).
+- **Required for Workflow**: **CONDITIONAL / FUTURE** (Udyam PAY's core revenue is origination commission; repayments are managed by the lender).
 - **Existing Repository Status**: **Partial**. Database stores `repaymentSchedule` as JSON on `financing_offers`.
 - **Provided by Aggregator**: **YES**.
 - **Separate Provider Required**: **NO**.
@@ -304,7 +304,7 @@ Each external service is evaluated against the 11 dimensions required for techni
 ### Category 16: Customer Notifications (SMS, WhatsApp, Email, OTP)
 - **Required for Workflow**: **YES** (Crucial for in-store drop-off re-engagement, status alerts, and consent audit).
 - **Existing Repository Status**: **Missing**. QR codes handle initial handoff; no outbound messaging exists.
-- **Provided by Aggregator**: **Partial** (Aggregator sends compliance SMS; Udhyam PAY needs own merchant/customer notifications).
+- **Provided by Aggregator**: **Partial** (Aggregator sends compliance SMS; Udyam PAY needs own merchant/customer notifications).
 - **Separate Provider Required**: **YES** (e.g. Twilio, Gupshup, Exotel, Karix).
 - **Specific API Operations**:
   - `POST /v1/messages/send`: Send transactional SMS or WhatsApp template message with checkout link.
@@ -359,7 +359,7 @@ Each external service is evaluated against the 11 dimensions required for techni
 ### Category 19: Document Storage & Encrypted Vault
 - **Required for Workflow**: **YES** (Archiving signed agreements, invoices, and compliance audit logs).
 - **Existing Repository Status**: **Missing**.
-- **Provided by Aggregator**: **Partial** (Aggregator stores lender loan agreements; Udhyam PAY must archive merchant invoices).
+- **Provided by Aggregator**: **Partial** (Aggregator stores lender loan agreements; Udyam PAY must archive merchant invoices).
 - **Separate Provider Required**: **YES** (AWS S3, Google Cloud Storage, or Azure Blob with server-side encryption).
 - **Specific API Operations**:
   - `PUT /v1/storage/documents/{id}`: Upload encrypted agreement copy.
@@ -437,7 +437,7 @@ To maximize engineering efficiency, external integrations are divided into four 
 
 A pivotal commercial and architectural decision is whether to use the aggregator's bundled services or contract with standalone vendors:
 
-| Service Area | Bundled via Aggregator (e.g. FinBox) | Standalone Specialized Provider | Udhyam PAY Recommendation |
+| Service Area | Bundled via Aggregator (e.g. FinBox) | Standalone Specialized Provider | Udyam PAY Recommendation |
 | :--- | :--- | :--- | :--- |
 | **Credit Bureau** | Included in credit decisioning API. | Direct Bureau membership (CIBIL/Experian). Requires NBFC license or heavy setup fee. | **Use Aggregator Bundled**. Avoids huge minimum commitments. |
 | **KYC & Identity** | Included in Aggregator Hosted Journey / SDK. | Digio / Signzy / Setu. | **Use Aggregator Bundled** for MVP; evaluate unbundled if custom UI is required. |
@@ -445,8 +445,8 @@ A pivotal commercial and architectural decision is whether to use the aggregator
 | **Bank Statement (AA)** | Proprietary (e.g. FinBox BankConnect). | Perfios / Anumati. | **Use Aggregator Bundled**. Aggregator algorithms are tuned to their partner NBFCs. |
 | **e-Mandate** | Managed via partner NBFC sponsor banks. | Standalone e-NACH gateway. | **Use Aggregator Bundled**. Lender's sponsor bank must accept the mandate. |
 | **Loan Agreement e-Sign** | Stamped and signed via aggregator partner. | Standalone Digio / Leegality. | **Use Aggregator Bundled**. Eliminates bilateral agreement template management. |
-| **Customer Notifications** | Compliance SMS only. | Twilio / Gupshup / Karix. | **Standalone Required**. Udhyam PAY must brand its own checkout reminders. |
-| **Document Storage** | Short-term cache. | Private AWS S3 / GCS with CMEK. | **Standalone Required**. Long-term compliance archival belongs to Udhyam PAY. |
+| **Customer Notifications** | Compliance SMS only. | Twilio / Gupshup / Karix. | **Standalone Required**. Udyam PAY must brand its own checkout reminders. |
+| **Document Storage** | Short-term cache. | Private AWS S3 / GCS with CMEK. | **Standalone Required**. Long-term compliance archival belongs to Udyam PAY. |
 
 ---
 
@@ -463,10 +463,10 @@ This checklist tracks the precise technical and operational requirements to requ
 | | Webhook specifications, event catalogs, and retry schedule | `[?] Requires Clarification` | Need HMAC signature header name and replay tolerance. |
 | | Sandbox test scenarios (deterministic approvals, declines, timeouts)| `[?] Requires Clarification` | Need test phone numbers / PANs for each scenario. |
 | **Lender Connectivity** | Complete list of active partner Banks and NBFCs | `[!] Unknown / Blocker` | Must verify coverage for consumer durable electronics. |
-| | Supported loan ticket sizes (min / max) and tenures (3, 6, 9, 12M)| `[?] Requires Clarification` | Udhyam target: Rs 10,000 to Rs 2,50,000; 3 to 18 months. |
+| | Supported loan ticket sizes (min / max) and tenures (3, 6, 9, 12M)| `[?] Requires Clarification` | Udyam target: Rs 10,000 to Rs 2,50,000; 3 to 18 months. |
 | | Support for 0% Subvented EMI (Merchant / Brand subvention) | `[?] Requires Clarification` | Critical for retail electronics sales conversion. |
 | | Multi-offer return: does single submission query all lenders? | `[?] Requires Clarification` | Must support concurrent discovery mode. |
-| **Loan Lifecycle** | Integration mode: Headless Server-to-Server vs Embedded Webview | `[?] Requires Clarification` | Determines whether customer PAN/KYC is handled by Udhyam. |
+| **Loan Lifecycle** | Integration mode: Headless Server-to-Server vs Embedded Webview | `[?] Requires Clarification` | Determines whether customer PAN/KYC is handled by Udyam. |
 | | Support for white-labeling or co-branding on customer UI | `[?] Requires Clarification` | Merchant brand presence builds in-store customer trust. |
 | | Handling of offline / in-store physical verification if triggered | `[?] Requires Clarification` | Should fail fast rather than leaving customer stranded in store. |
 | | Key Fact Statement (KFS) generation & cooling-off period support| `[?] Requires Clarification` | Mandatory compliance under RBI DLG rules. |

@@ -71,7 +71,7 @@ const postgresUrlSchema = z
     { message: 'must be a valid postgresql:// connection URL' },
   );
 
-export const DEV_DEFAULT_JWT_SECRET = 'udhyam-pay-dev-super-secret-jwt-key-min-32-chars!';
+export const DEV_DEFAULT_JWT_SECRET = 'udyam-pay-dev-super-secret-jwt-key-min-32-chars!';
 
 const envSchema = z
   .object({

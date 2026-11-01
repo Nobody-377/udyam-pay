@@ -1,9 +1,9 @@
 {
-  "name": "udhyam-pay-backend",
+  "name": "udyam-pay-backend",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Udhyam PAY backend: multi-lender EMI financing orchestration platform (modular monolith).",
+  "description": "Udyam PAY backend: multi-lender EMI financing orchestration platform (modular monolith).",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=20.19.0"

@@ -3,8 +3,8 @@ Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 $root = (Get-Location).Path
-$destZip = Join-Path $root 'udhyam-pay-backend-complete.zip'
-$stagingDir = Join-Path ([System.IO.Path]::GetTempPath()) "udhyam-pay-pkg-$(Get-Random)"
+$destZip = Join-Path $root 'udyam-pay-backend-complete.zip'
+$stagingDir = Join-Path ([System.IO.Path]::GetTempPath()) "udyam-pay-pkg-$(Get-Random)"
 
 if (Test-Path $destZip) {
   Remove-Item $destZip -Force

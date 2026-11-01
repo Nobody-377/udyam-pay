@@ -34,7 +34,7 @@ async function test(name: string, fn: () => Promise<void> | void) {
 
 async function main() {
   process.env.DEV_DEFAULT_WEBHOOK_SECRET = 'lender-default-dev-secret';
-  console.log('--- UDHYAM PAY BACKEND LOGIC VERIFICATION ---');
+  console.log('--- UDYAM PAY BACKEND LOGIC VERIFICATION ---');
 
   // 1. State Machine
   console.log('\n[1/10] State Machine Invariants:');

@@ -1,4 +1,4 @@
-# Udhyam PAY — Incremental Implementation Plan
+# Udyam PAY — Incremental Implementation Plan
 
 **Target Architecture:** Modular Monolith (Express 5 + Prisma 6 + PostgreSQL 16 + TypeScript 5)  
 **Security Standard:** RBI Digital Lending Compliance & DPDP Act Alignment  
@@ -8,7 +8,7 @@
 
 ## Plan Overview & Phasing Strategy
 
-To safely elevate Udhyam PAY from its current Foundation Skeleton (Phase 1) to a production-ready, fully verified multi-lender financing orchestration backend, implementation is divided into **12 sequential, test-driven phases**. Each phase is self-contained, builds strictly upon prior phases, and enforces strict acceptance criteria.
+To safely elevate Udyam PAY from its current Foundation Skeleton (Phase 1) to a production-ready, fully verified multi-lender financing orchestration backend, implementation is divided into **12 sequential, test-driven phases**. Each phase is self-contained, builds strictly upon prior phases, and enforces strict acceptance criteria.
 
 ```mermaid
 flowchart TD
@@ -474,7 +474,7 @@ flowchart TD
      7. Lender webhook confirms disbursement.
      8. Application moves to `DISBURSED`; transaction and commission accrued.
 5. **Project Clean-up:**
-   - Safely remove redundant nested directory `./udhyam-pay-backend/udhyam-pay-backend`.
+   - Safely remove redundant nested directory `./udyam-pay-backend/udyam-pay-backend`.
    - Update `README.md` and `STATUS.md`.
 
 ### Files to Modify / Create

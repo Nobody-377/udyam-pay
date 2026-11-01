@@ -1,9 +1,9 @@
-# Udhyam PAY — Post-Implementation Verification Report
+# Udyam PAY — Post-Implementation Verification Report
 
 **Document Reference**: `docs/integration-readiness/POST_IMPLEMENTATION_VERIFICATION.md`  
 **Date**: November 2026  
 **Auditor**: Senior Backend Architect, Application Security Engineer & Systems Auditor  
-**Repository**: Udhyam PAY Backend  
+**Repository**: Udyam PAY Backend  
 **Status**: Verification Completed  
 
 ---
@@ -53,7 +53,7 @@ All four verification commands were executed directly in the project workspace:
 - **Exit Code**: `0`
 - **Output**:
   ```
-  > udhyam-pay-backend@0.1.0 typecheck
+  > udyam-pay-backend@0.1.0 typecheck
   > tsc --noEmit
   ```
 - **Result**: Zero compilation errors across all source files and test suites.
@@ -63,12 +63,12 @@ All four verification commands were executed directly in the project workspace:
 - **Exit Code**: `0`
 - **Output**:
   ```
-  > udhyam-pay-backend@0.1.0 test:verify
+  > udyam-pay-backend@0.1.0 test:verify
   > node scripts/run-verify.js
 
   Compiling verification script...
   Running logic verification on Node.js runtime...
-  --- UDHYAM PAY BACKEND LOGIC VERIFICATION ---
+  --- UDYAM PAY BACKEND LOGIC VERIFICATION ---
 
   [1/10] State Machine Invariants:
     [PASS] Terminal states have zero outgoing transitions
@@ -126,7 +126,7 @@ All four verification commands were executed directly in the project workspace:
 - **Exit Code**: `0`
 - **Output**:
   ```
-  > udhyam-pay-backend@0.1.0 test
+  > udyam-pay-backend@0.1.0 test
   > vitest run
 
    ✓ tests/unit/circuit-breaker.test.ts (4 tests) 157ms
@@ -155,7 +155,7 @@ All four verification commands were executed directly in the project workspace:
 - **Exit Code**: `0`
 - **Output**:
   ```
-  > udhyam-pay-backend@0.1.0 build
+  > udyam-pay-backend@0.1.0 build
   > tsc -p tsconfig.build.json
   ```
 - **Result**: Compiled without error into `dist/`.
@@ -192,7 +192,7 @@ The complete customer journey was verified end-to-end via `scripts/verify-journe
 
 [STEP 7] Checkout session & QR Code generation: HTTP 201 Created
  - Token: cs_5fee959cefa7f7a2929b38dc5466689e10fc4fb0fc14eeaf (SHA-256 hashed in DB)
- - QR Payload: https://pay.udhyam.example/checkout/cs_5fee959cefa7f7a2929b38dc5466689e10fc4fb0fc14eeaf
+ - QR Payload: https://pay.udyam.example/checkout/cs_5fee959cefa7f7a2929b38dc5466689e10fc4fb0fc14eeaf
 
 [STEP 8] Public unauthenticated QR scan: HTTP 200 OK
  - Customer accesses checkout publicly; verifies purchase details (Rs 85,000).
@@ -231,7 +231,7 @@ The complete customer journey was verified end-to-end via `scripts/verify-journe
    - Every demo lender has `isSimulated: true` in `demo-lenders.json` and in database records.
    - Display names are explicitly prefixed with `[DEMO]`.
    - Every `FinancingOffer` created in the database carries `isSimulated: true`.
-   - Offer terms point to demonstration disclaimer URLs (`https://demo.udhyam.example/terms/...`).
+   - Offer terms point to demonstration disclaimer URLs (`https://demo.udyam.example/terms/...`).
 2. **Production Anti-Mock Guard**:
    - `parseEnv` strictly rejects `PROVIDER_MODE=mock` when `NODE_ENV=production`, preventing silent mock fallback.
 3. **Missing Credentials Fail-Closed Behavior**:
@@ -268,7 +268,7 @@ The following non-blocking operational items must be addressed when deploying in
    - *Issue*: The waterfall orchestrator reads eligible lenders from the database table `lenders`. If the deployed PostgreSQL database is completely empty, the waterfall will find 0 configured lenders in DB and transition applications to `DECLINED`.
    - *Resolution for Demo Mode*: Run a database seed script inserting the 3 demo lenders (`DEMO_BANK_ALPHA`, `DEMO_NBFC_BETA`, `DEMO_GAMMA_CREDIT`) into `lenders` and `lender_configurations`.
 3. **CORS Origin Whitelisting**:
-   - *Issue*: In production/demo mode, `CORS_ALLOWED_ORIGINS` must match the exact public frontend URL (e.g. `https://demo.udhyam.example`), otherwise cross-origin browser requests from merchant or customer devices will be blocked.
+   - *Issue*: In production/demo mode, `CORS_ALLOWED_ORIGINS` must match the exact public frontend URL (e.g. `https://demo.udyam.example`), otherwise cross-origin browser requests from merchant or customer devices will be blocked.
 
 ---
 
@@ -281,7 +281,7 @@ The platform is **NOT** ready for real lending operations. The following externa
 3. **Lack of Bank Account Penny Drop**: No integration with bank validation gateways to verify account ownership.
 4. **Lack of e-Mandate Infrastructure**: No e-NACH or UPI Autopay mandate setup for automated monthly EMI repayment.
 5. **Lack of Key Fact Statement (KFS) & Aadhaar e-Sign**: No integration with an Electronic Signature Provider (e.g. Digio, Leegality) to execute legally binding loan agreements under RBI rules.
-6. **Absence of Regulatory Tripartite Agreements**: Udhyam PAY does not have executed Lending Service Provider (LSP) tripartite agreements with RBI-regulated NBFCs or Banks.
+6. **Absence of Regulatory Tripartite Agreements**: Udyam PAY does not have executed Lending Service Provider (LSP) tripartite agreements with RBI-regulated NBFCs or Banks.
 7. **Customer Data Minimization Constraint**: The database deliberately does not store customer PAN, date of birth, or bank details. Real underwriting requires either migrating to an aggregator-hosted webview journey or expanding the backend data model under strict DPDP compliance.
 
 ---

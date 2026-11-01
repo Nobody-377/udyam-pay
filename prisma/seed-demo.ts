@@ -196,7 +196,7 @@ export async function seedDemoEntities(
   prisma: PrismaClient,
 ): Promise<{ adminEmail: string; merchantLegalName: string; shopName: string }> {
   // 1. Seed System Administrator
-  const adminEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@udhyam.example';
+  const adminEmail = process.env.INITIAL_ADMIN_EMAIL || 'admin@udyam.example';
   const adminPassword = process.env.INITIAL_ADMIN_PASSWORD || 'AdminPassword123!';
   const existingAdmin = await prisma.user.findUnique({ where: { email: adminEmail } });
 
@@ -260,7 +260,7 @@ export async function seedDemoEntities(
 }
 
 async function main() {
-  process.stdout.write('=== Udhyam PAY Demo Environment Seeder ===\n');
+  process.stdout.write('=== Udyam PAY Demo Environment Seeder ===\n');
 
   // Verify environment safety guard
   checkDemoSeedAllowed();
